@@ -1,7 +1,8 @@
 from data.entries import entries
+from model.JournalEntry import JournalEntry
 from typing import Optional
 
-def get_all_journal_entires(userId: int) -> list[dict]:
+def get_all_journal_entires(userId: int) -> list[JournalEntry]:
     """
     Retrieve all journal entries for a specific user.
 
@@ -9,12 +10,12 @@ def get_all_journal_entires(userId: int) -> list[dict]:
         userId (int): The ID of the user whose entries are requested.
 
     Returns:
-        list[dict]: A list of journal entries belonging to the user.
+        list[JournalEntry]: A list of journal entries belonging to the user.
     """
     return entries
 
 
-def get_journal_entry(entryId: int) -> Optional[dict]:
+def get_journal_entry(entryId: int) -> Optional[JournalEntry]:
     """
     Retrieve a single journal entry by its ID.
 
