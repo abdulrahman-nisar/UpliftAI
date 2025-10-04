@@ -18,7 +18,7 @@ def login():
         entries = journal_services.get_all_journal_entires(user_id)
         return render_template('frontend/index.html', entries=entries, user_id=user_id)
 
-    return render_template('frontend/login.html')  # show login form if GET
+    return render_template('frontend/login.html')
 
 
 @app.route('/<int:user_id>/entries', methods=['GET'])
