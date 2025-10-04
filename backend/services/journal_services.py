@@ -15,6 +15,8 @@ def get_all_journal_entires(userId: int) -> list[JournalEntry]:
     return entries
 
 
+
+
 def get_journal_entry(entryId: int) -> Optional[JournalEntry]:
     """
     Retrieve a single journal entry by its ID.
@@ -48,7 +50,28 @@ def delete_journal_entry(entryId: int) -> bool:
     return False
 
 
-def update_journal_entry(updated_entry: dict) -> bool:
+def create_journal_entry(new_entry: JournalEntry) -> bool:
+    """
+    Create a new journal entry and add it to the entries list.
+
+    Args:
+        new_entry (JournalEntry): The new entry object to be added.
+
+    Returns:
+        bool: True if the entry was successfully added, 
+              False if an entry with the same 'entryId' already exists.
+    """
+    
+    for entry in entries:
+        if entry.entry_id == new_entry.entry_id:
+            return False
+
+    entries.append(new_entry)
+    return True
+
+
+
+def update_journal_entry(updated_entry: JournalEntry) -> bool:
     """
     Update an existing journal entry with new data.
 
