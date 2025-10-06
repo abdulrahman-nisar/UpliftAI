@@ -1,5 +1,4 @@
 from data.users import users
-
 def authenticate_user(username: str, password: str) -> int:
     """
     Authenticate a user based on username and password.
@@ -15,7 +14,7 @@ def authenticate_user(username: str, password: str) -> int:
 
     for user in users:
         if user.user_name == username and user.password == password:
-            return True
+            return user.user_id
         
-    return False
+    return -1
             

@@ -1,7 +1,9 @@
-from flask import Flask, redirect, render_template, request, jsonify, url_for
+from flask import Flask, redirect, render_template, request, url_for
 from backend.model.JournalEntry import JournalEntry
 from backend.services import journal_services, user_services
 from datetime import date
+
+
 app = Flask(__name__)
 
 
@@ -12,7 +14,7 @@ def login():
         password = request.form.get('password')
 
         user_id = user_services.authenticate_user(username, password)
-        if not user_id:
+        if user_id == -1:
             return "Invalid credentials", 401
 
         entries = journal_services.get_all_journal_entires(user_id)
@@ -20,7 +22,7 @@ def login():
 
     return render_template('frontend/login.html')
 
-
+    
 @app.route('/<int:user_id>/entries', methods=['GET'])
 def get_all_entries(user_id: int):
     entries = journal_services.get_all_journal_entires(user_id)
@@ -30,7 +32,7 @@ def get_all_entries(user_id: int):
 @app.route('/<int:user_id>/entries/<int:entry_id>', methods=['GET'])
 def get_entry(user_id: int, entry_id: int):
     entry = journal_services.get_journal_entry(entry_id)
-    return redirect(url_for('get_all_entries', user_id=user_id))
+    return render_template('frontend/edit_entry.html', entry=entry, user_id=user_id)
 
 
 @app.route('/<int:user_id>/entries', methods=['POST'])
