@@ -1,4 +1,4 @@
-from data.entries import entries
+from temporarydatastore.entries import entries
 from model.JournalEntry import JournalEntry
 from typing import Optional
 
