@@ -1,8 +1,8 @@
 from temporarydatastore.entries import entries
-from model.JournalEntry import JournalEntry
+from models.JournalEntryModel import JournalEntryModel
 from typing import Optional
 
-def get_all_journal_entires(userId: int) -> list[JournalEntry]:
+def get_all_journal_entires(userId: int) -> list[JournalEntryModel]:
     """
     Retrieve all journal entries for a specific user.
 
@@ -17,7 +17,7 @@ def get_all_journal_entires(userId: int) -> list[JournalEntry]:
 
 
 
-def get_journal_entry(entryId: int) -> Optional[JournalEntry]:
+def get_journal_entry(entryId: int) -> Optional[JournalEntryModel]:
     """
     Retrieve a single journal entry by its ID.
 
@@ -50,7 +50,7 @@ def delete_journal_entry(entryId: int) -> bool:
     return False
 
 
-def create_journal_entry(new_entry: JournalEntry) -> bool:
+def create_journal_entry(new_entry: JournalEntryModel) -> bool:
     """
     Create a new journal entry and add it to the entries list.
 
@@ -71,7 +71,7 @@ def create_journal_entry(new_entry: JournalEntry) -> bool:
 
 
 
-def update_journal_entry(updated_entry: JournalEntry) -> bool:
+def update_journal_entry(updated_entry: JournalEntryModel) -> bool:
     """
     Update an existing journal entry with new data.
 
