@@ -1,6 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for
-from backend.model.JournalEntry import JournalEntry
-from backend.services import journal_services, user_services
+from models.JournalEntry import JournalEntry
+from services import journal_services, user_services
 from datetime import date
 
 
