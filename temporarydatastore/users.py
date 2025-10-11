@@ -1,6 +1,6 @@
-from model.User import User
+from models.UserModel import UserModel
 users = [
-    User(
+    UserModel(
         user_name="danial",
         password="123456"
     )

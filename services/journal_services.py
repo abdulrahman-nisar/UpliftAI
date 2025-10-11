@@ -1,4 +1,4 @@
-from temporarydatastore.entries import entries
+from temporarydatastore.entries import journal_entries
 from models.JournalEntryModel import JournalEntryModel
 from typing import Optional
 
@@ -12,7 +12,7 @@ def get_all_journal_entires(userId: int) -> list[JournalEntryModel]:
     Returns:
         list[JournalEntry]: A list of journal entries belonging to the user.
     """
-    return entries
+    return journal_entries
 
 
 
@@ -27,7 +27,7 @@ def get_journal_entry(entryId: int) -> Optional[JournalEntryModel]:
     Returns:
         dict | None: The journal entry if found, otherwise None.
     """
-    for entry in entries:
+    for entry in journal_entries:
         if entry['entryId'] == entryId:
             return entry
     return None
@@ -43,9 +43,9 @@ def delete_journal_entry(entryId: int) -> bool:
     Returns:
         bool: True if the entry was found and deleted, False if not found.
     """
-    for i, entry in enumerate(entries):
+    for i, entry in enumerate(journal_entries):
         if entry['entryId'] == entryId:
-            del entries[i]
+            del journal_entries[i]
             return True
     return False
 
@@ -62,11 +62,11 @@ def create_journal_entry(new_entry: JournalEntryModel) -> bool:
               False if an entry with the same 'entryId' already exists.
     """
     
-    for entry in entries:
+    for entry in journal_entries:
         if entry.entry_id == new_entry.entry_id:
             return False
 
-    entries.append(new_entry)
+    journal_entries.append(new_entry)
     return True
 
 
@@ -82,8 +82,8 @@ def update_journal_entry(updated_entry: JournalEntryModel) -> bool:
     Returns:
         bool: True if the entry was found and updated, False if not found.
     """
-    for i, entry in enumerate(entries):
+    for i, entry in enumerate(journal_entries):
         if entry['entryId'] == updated_entry['entryId']:
-            entries[i] = updated_entry
+            journal_entries[i] = updated_entry
             return True
     return False
