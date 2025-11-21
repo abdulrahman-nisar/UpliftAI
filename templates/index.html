@@ -10,97 +10,111 @@
 </head>
 
 <body>
-  <div class="logo">
-    <img src="static/images/Logo.svg" />
+  <div class="split-screen">
+    <div class="left-panel">
+      <div class="branding-content">
+        <div class="logo">
+          <img src="static/images/Logo.svg" alt="UpliftAI Logo" />
+        </div>
+        <h1>Welcome to UPLIFT AI</h1>
+        <p>Your personal companion for mental wellness and daily journaling.</p>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <section class="forms">
+        <!-- LOGIN FORM -->
+        <div class="form login">
+          <div class="form-content">
+            <header>Login with UPLIFTAI account</header>
+            <form onsubmit="event.preventDefault(); loginUser();">
+              <div class="field input-field">
+                <input id="login-email" type="email" placeholder="Email" class="input" required />
+              </div>
+
+              <div class="field input-field">
+                <input id="login-password" type="password" placeholder="Password" class="password" required />
+                <i class='bx bx-hide eye-icon'></i>
+              </div>
+
+              <div class="form-link">
+                <a href="#" class="forgot-pass">Forgot password?</a>
+              </div>
+
+              <div class="field button-field">
+                <button type="submit">Login</button>
+              </div>
+            </form>
+
+            <div class="form-link">
+              <span>Don't have an account? <a href="#" class="link signup-link">Signup</a></span>
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="media-options">
+            <a href="#" class="field google" onclick="loginWithGoogle()">
+              <img src="static/images/google.png" alt="" class="google-img" />
+              <span>Login with Google</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="form signup">
+          <div class="form-content">
+            <header>Create new account</header>
+            <form onsubmit="event.preventDefault(); signupUser();">
+              <div class="field input-field">
+                <input id="signup-email" type="email" placeholder="Email" class="input" required />
+              </div>
+
+              <div class="field input-field">
+                <input id="signup-password" type="password" placeholder="Create password" class="password" required />
+              </div>
+
+              <div class="field input-field">
+                <input id="signup-confirm" type="password" placeholder="Confirm password" class="password" required />
+                <i class='bx bx-hide eye-icon'></i>
+              </div>
+
+              <div class="field button-field">
+                <button type="submit">Signup</button>
+              </div>
+            </form>
+
+            <div class="form-link">
+              <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="media-options">
+            <a href="#" class="field google" onclick="loginWithGoogle()">
+              <img src="static/images/google.png" alt="" class="google-img" />
+              <span>Login with Google</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
-
-  <section class="container forms">
-    <!-- LOGIN FORM -->
-    <div class="form login">
-      <div class="form-content">
-        <header>Login with UPLIFTAI account</header>
-        <form onsubmit="event.preventDefault(); loginUser();">
-          <div class="field input-field">
-            <input id="login-email" type="email" placeholder="Email" class="input" required />
-          </div>
-
-          <div class="field input-field">
-            <input id="login-password" type="password" placeholder="Password" class="password" required />
-            <i class='bx bx-hide eye-icon'></i>
-          </div>
-
-          <div class="form-link">
-            <a href="#" class="forgot-pass">Forgot password?</a>
-          </div>
-
-          <div class="field button-field">
-            <button type="submit">Login</button>
-          </div>
-        </form>
-
-        <div class="form-link">
-          <span>Don't have an account? <a href="#" class="link signup-link">Signup</a></span>
-        </div>
-      </div>
-
-      <div class="line"></div>
-
-      <div class="media-options">
-        <a href="#" class="field google" onclick="loginWithGoogle()">
-          <img src="static/images/google.png" alt="" class="google-img" />
-          <span>Login with Google</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- SIGNUP FORM -->
-    <div class="form signup">
-      <div class="form-content">
-        <header>Create new account</header>
-        <form onsubmit="event.preventDefault(); signupUser();">
-          <div class="field input-field">
-            <input id="signup-email" type="email" placeholder="Email" class="input" required />
-          </div>
-
-          <div class="field input-field">
-            <input id="signup-password" type="password" placeholder="Create password" class="password" required />
-          </div>
-
-          <div class="field input-field">
-            <input id="signup-confirm" type="password" placeholder="Confirm password" class="password" required />
-            <i class='bx bx-hide eye-icon'></i>
-          </div>
-
-          <div class="field button-field">
-            <button type="submit">Signup</button>
-          </div>
-        </form>
-
-        <div class="form-link">
-          <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
-        </div>
-      </div>
-
-      <div class="line"></div>
-
-      <div class="media-options">
-        <a href="#" class="field google" onclick="loginWithGoogle()">
-          <img src="static/images/google.png" alt="" class="google-img" />
-          <span>Login with Google</span>
-        </a>
-      </div>
-    </div>
-  </section>
 
   <!-- Simple Loading Spinner -->
   <div id="loading" class="loading hidden">
     <div class="spinner"></div>
   </div>
 
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
   <script>
-       const FIREBASE_API_KEY = "{{ firebase_api_key }}";
+     FIREBASE_API_KEY = "{{ firebase_api_key }}";
   </script>
-  <script type="module" src="static/js/FirebaseConfig.js"></script>
-  <script type="module" src="static/js/index.js"></script>
+
+  <script type="module" src="/static/js/FirebaseConfig.js"></script>
+  <script type="module" src="/static/js/index.js"></script>
 </body>
 </html>

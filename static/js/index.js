@@ -42,6 +42,40 @@ function showLoader(show) {
   loader.classList.toggle("hidden", !show);
 }
 
+// Toast Notification Function
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  let iconClass = 'bx-info-circle';
+  if (type === 'success') iconClass = 'bx-check-circle';
+  if (type === 'error') iconClass = 'bx-x-circle';
+
+  toast.innerHTML = `
+    <i class='bx ${iconClass} toast-icon'></i>
+    <span class="toast-message">${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Trigger reflow
+  toast.offsetHeight;
+
+  // Show toast
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  // Remove toast after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      container.removeChild(toast);
+    }, 300);
+  }, 3000);
+}
+
 //  Signup Function
 async function signupUser() {
   const email = document.getElementById("signup-email").value;
@@ -49,17 +83,19 @@ async function signupUser() {
   const confirm = document.getElementById("signup-confirm").value;
 
   if (password !== confirm) {
-    alert("Passwords do not match!");
+    showToast("Passwords do not match!", "error");
     return;
   }
 
   showLoader(true);
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    alert("Signup successful!");
-    //checkUserStatus();
+    showToast("Signup successful! Redirecting...", "success");
+    setTimeout(() => {
+      window.location.href = "/goals";
+    }, 1500);
   } catch (error) {
-    alert(error.message);
+    showToast(error.message, "error");
   } finally {
     showLoader(false);
   }
@@ -73,10 +109,12 @@ async function loginUser() {
   showLoader(true);
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    alert("Login successful!");
-    //checkUserStatus();
+    showToast("Login successful!", "success");
+       setTimeout(() => {
+      window.location.href = "/goals";
+    }, 1500);
   } catch (error) {
-    alert(error.message);
+    showToast(error.message, "error");
   } finally {
     showLoader(false);
   }
@@ -89,10 +127,10 @@ async function loginWithGoogle() {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    alert(`Welcome ${user.displayName}`);
+    showToast(`Welcome ${user.displayName}`, "success");
    // checkUserStatus();
   } catch (error) {
-    alert(error.message);
+    showToast(error.message, "error");
   } finally {
     showLoader(false);
   }

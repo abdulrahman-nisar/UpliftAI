@@ -4,7 +4,7 @@
  */
 
 import apiService from './ApiService.js';
-import geminiService from '../static/js/gemini-service.js';
+import geminiService from '../static/js/GeminiService.js';
 
 class ContentViewModel {
     constructor() {
@@ -169,7 +169,7 @@ class ContentViewModel {
         try {
             const params = {};
             if (mood) params.mood = mood;
-            if (goals.length > 0) params.goals = goals;
+            if (goals.length > 0) params.goals = goals.join(','); // ✅ FIX: Join array to string
 
             const response = await apiService.get('/content/retrieve', params);
 
@@ -199,7 +199,7 @@ class ContentViewModel {
     }
 
     /**
-     * Generate personalized journal prompt
+     * Generate personalized journal prompt (Simple, no AI)
      */
     async generateJournalPrompt(mood = null, goals = []) {
         this.isLoading = true;
@@ -208,7 +208,7 @@ class ContentViewModel {
         try {
             const params = {};
             if (mood) params.mood = mood;
-            if (goals.length > 0) params.goals = goals;
+            if (goals.length > 0) params.goals = goals.join(','); // ✅ FIX: Join array
 
             const response = await apiService.get('/content/prompt', params);
 
@@ -307,6 +307,191 @@ class ContentViewModel {
         }
     }
 
+    // ═══════════════════════════════════════════
+    // RAG + AI METHODS (Using Gemini)
+    // ═══════════════════════════════════════════
+
+    /**
+     * Generate journal prompt using RAG + Gemini AI
+     */
+    async generateRagPromptWithAI(userId, mood, goals = []) {
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            console.log(`🤖 Generating RAG prompt for user: ${userId}, mood: ${mood}`);
+            
+            // STEP 1: RETRIEVE - Get user's recent journals
+            const journalsResponse = await apiService.get(`/journals/${userId}`, { limit: 2 });
+            const recentJournals = [];
+            
+            if (journalsResponse.success && journalsResponse.data.journals) {
+                journalsResponse.data.journals.forEach(j => {
+                    recentJournals.push(j.content.substring(0, 80));
+                });
+            }
+            
+            console.log(`📖 Retrieved ${recentJournals.length} recent journals`);
+            
+            // STEP 2: RETRIEVE - Get relevant content from backend
+            const params = { mood: mood };
+            if (goals.length > 0) {
+                params.goals = goals.join(','); // ✅ FIX: Convert array to comma-separated string
+            }
+            
+            const contentResponse = await apiService.get('/content/retrieve', params);
+            
+            const retrievedTips = [];
+            const retrievedQuotes = [];
+            
+            if (contentResponse.success && contentResponse.data.content) {
+                contentResponse.data.content.forEach(item => {
+                    if (item.type === 'Tip') {
+                        retrievedTips.push(item.text);
+                    } else if (item.type === 'Quote') {
+                        retrievedQuotes.push(item.text);
+                    }
+                });
+            }
+            
+            console.log(`📚 Retrieved ${retrievedTips.length} tips, ${retrievedQuotes.length} quotes`);
+            
+            // STEP 3: GENERATE - Use Gemini AI
+            const result = await geminiService.generateJournalPrompt(
+                mood,
+                retrievedTips,
+                retrievedQuotes,
+                recentJournals
+            );
+            
+            if (result.success) {
+                this.currentPrompt = result.prompt;
+                console.log('✅ AI prompt generated successfully');
+            }
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Error in generateRagPromptWithAI:', error);
+            this.error = error.message;
+            return {
+                success: false,
+                error: error.message
+            };
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    /**
+     * Generate motivational message with AI
+     */
+    async generateMotivationWithAI(mood) {
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            console.log(`💬 Generating motivation for mood: ${mood}`);
+            
+            // Retrieve quotes
+            const quotesResponse = await apiService.get('/content/type/Quote');
+            
+            const retrievedQuotes = [];
+            if (quotesResponse.success && quotesResponse.data.content) {
+                quotesResponse.data.content.forEach(q => {
+                    retrievedQuotes.push(q.text);
+                });
+            }
+            
+            console.log(`📚 Retrieved ${retrievedQuotes.length} quotes`);
+            
+            // Generate with Gemini
+            const result = await geminiService.generateMotivationalMessage(
+                mood,
+                retrievedQuotes
+            );
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Error in generateMotivationWithAI:', error);
+            this.error = error.message;
+            return {
+                success: false,
+                error: error.message
+            };
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    /**
+     * Generate daily affirmation with AI
+     */
+    async generateAffirmationWithAI(mood, goals = []) {
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            console.log(`🌟 Generating affirmation for mood: ${mood}`);
+            
+            const result = await geminiService.generateDailyAffirmation(mood, goals);
+            
+            if (result.success) {
+                console.log('✅ Affirmation generated');
+            }
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Error in generateAffirmationWithAI:', error);
+            this.error = error.message;
+            return {
+                success: false,
+                error: error.message
+            };
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    /**
+     * Get AI feedback on journal entry
+     */
+    async getJournalFeedbackWithAI(journalContent, mood) {
+        this.isLoading = true;
+        this.error = null;
+
+        try {
+            console.log(`💬 Generating feedback for journal entry`);
+            
+            const result = await geminiService.generateJournalFeedback(
+                journalContent,
+                mood
+            );
+            
+            if (result.success) {
+                console.log('✅ Feedback generated');
+            }
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Error in getJournalFeedbackWithAI:', error);
+            this.error = error.message;
+            return {
+                success: false,
+                error: error.message
+            };
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    // ═══════════════════════════════════════════
+    // UTILITY METHODS
+    // ═══════════════════════════════════════════
+
     /**
      * Get current quote
      */
@@ -336,6 +521,20 @@ class ContentViewModel {
     }
 
     /**
+     * Get loading state
+     */
+    isLoadingState() {
+        return this.isLoading;
+    }
+
+    /**
+     * Get error
+     */
+    getError() {
+        return this.error;
+    }
+
+    /**
      * Clear content
      */
     clearContent() {
@@ -347,148 +546,11 @@ class ContentViewModel {
         this.error = null;
     }
 
-     async generateRagPromptWithAI(userId, mood, goals = []) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            // STEP 1: RETRIEVE - Get user's recent journals
-            const journalsResponse = await apiService.get(`/journals/${userId}`, { limit: 2 });
-            const recentJournals = [];
-            
-            if (journalsResponse.success && journalsResponse.data.journals) {
-                journalsResponse.data.journals.forEach(j => {
-                    recentJournals.push(j.content.substring(0, 80));
-                });
-            }
-            
-            // STEP 2: RETRIEVE - Get relevant content from backend
-            const contentResponse = await apiService.get('/content/retrieve', { 
-                mood: mood, 
-                goals: goals 
-            });
-            
-            const retrievedTips = [];
-            const retrievedQuotes = [];
-            
-            if (contentResponse.success && contentResponse.data.content) {
-                contentResponse.data.content.forEach(item => {
-                    if (item.type === 'Tip') {
-                        retrievedTips.push(item.text);
-                    } else if (item.type === 'Quote') {
-                        retrievedQuotes.push(item.text);
-                    }
-                });
-            }
-            
-            // STEP 3: GENERATE - Use Gemini AI
-            const result = await geminiService.generateJournalPrompt(
-                mood,
-                retrievedTips,
-                retrievedQuotes,
-                recentJournals
-            );
-            
-            if (result.success) {
-                this.currentPrompt = result.prompt;
-            }
-            
-            return result;
-            
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-    
     /**
-     * Generate motivational message with AI
+     * Clear error
      */
-    async generateMotivationWithAI(mood) {
-        this.isLoading = true;
+    clearError() {
         this.error = null;
-
-        try {
-            // Retrieve quotes
-            const quotesResponse = await apiService.get('/content/type/Quote');
-            
-            const retrievedQuotes = [];
-            if (quotesResponse.success && quotesResponse.data.content) {
-                quotesResponse.data.content.forEach(q => {
-                    retrievedQuotes.push(q.text);
-                });
-            }
-            
-            // Generate with Gemini
-            const result = await geminiService.generateMotivationalMessage(
-                mood,
-                retrievedQuotes
-            );
-            
-            return result;
-            
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-    
-    /**
-     * Generate daily affirmation with AI
-     */
-    async generateAffirmationWithAI(mood, goals) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const result = await geminiService.generateDailyAffirmation(mood, goals);
-            return result;
-            
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-    
-    /**
-     * Get AI feedback on journal entry
-     */
-    async getJournalFeedbackWithAI(journalContent, mood) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const result = await geminiService.generateJournalFeedback(
-                journalContent,
-                mood
-            );
-            
-            return result;
-            
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
     }
 }
 

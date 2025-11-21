@@ -1,13 +1,16 @@
 /**
- * Gemini AI Service using Firebase AI SDK
+ * Gemini AI Service using Direct REST API
  * Handles all AI/LLM-based content generation
  */
 
-import { geminiModel } from './firebase-config.js';
+// Import config for API key
+import { GEMINI_API_KEY } from './config.js';
 
 class GeminiService {
     constructor() {
-        this.model = geminiModel;
+        // Gemini API configuration
+        this.apiKey = GEMINI_API_KEY;
+        this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent";
         
         // System context for wellness companion
         this.systemContext = `
@@ -20,6 +23,70 @@ Your role:
 - Keep responses concise (under 150 words)
 - Use simple, friendly language
 `;
+        
+        console.log("✅ Gemini AI Service initialized");
+        
+        // Validate API key
+        if (!this.apiKey || this.apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
+            console.error('❌ Gemini API key not configured! Please add it to config.js');
+        }
+    }
+    
+    /**
+     * Internal method to call Gemini API
+     */
+    async _callGeminiAPI(promptText) {
+        try {
+            const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: promptText
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 500,
+                        topP: 0.95,
+                        topK: 40
+                    },
+                    safetySettings: [
+                        {
+                            category: "HARM_CATEGORY_HARASSMENT",
+                            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                        },
+                        {
+                            category: "HARM_CATEGORY_HATE_SPEECH",
+                            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                        }
+                    ]
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            // Extract text from response
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!text) {
+                throw new Error('No response text from Gemini API');
+            }
+            
+            return text.trim();
+            
+        } catch (error) {
+            console.error('❌ Gemini API call failed:', error);
+            throw error;
+        }
     }
     
     /**
@@ -27,10 +94,12 @@ Your role:
      */
     async generateJournalPrompt(userMood, retrievedTips, retrievedQuotes, recentJournals = []) {
         try {
+            console.log(`🤖 Generating journal prompt for mood: ${userMood}`);
+            
             // Build context from retrieved content
             const tipsText = this._formatList(retrievedTips);
             const quotesText = this._formatList(retrievedQuotes);
-            const journalsText = recentJournals.join(', ');
+            const journalsText = recentJournals.length > 0 ? recentJournals.join(', ') : 'None';
             
             const context = `
 USER MOOD: ${userMood}
@@ -57,27 +126,27 @@ Generate a warm, personalized journal prompt for this user.
 Requirements:
 1. Acknowledge their ${userMood} mood with empathy
 2. Ask 2-3 thoughtful reflection questions
-3. Reference one of the retrieved tips naturally
+3. Reference one of the retrieved tips naturally (if available)
 4. Be supportive and encouraging
 5. Keep it under 100 words
 
 Generate only the journal prompt text, nothing else.
 `;
             
-            // ✅ Generate with Gemini using Firebase AI SDK
-            const result = await this.model.generateContent(promptText);
-            const response = result.response;
-            const text = response.text();
+            // Call Gemini API
+            const text = await this._callGeminiAPI(promptText);
+            
+            console.log('✅ Journal prompt generated successfully');
             
             return {
                 success: true,
-                prompt: text.trim(),
+                prompt: text,
                 mood: userMood,
-                source: 'gemini-firebase-ai'
+                source: 'gemini-api'
             };
             
         } catch (error) {
-            console.error('Gemini generation error:', error);
+            console.error('❌ Gemini generation error:', error);
             return this._fallbackPrompt(userMood);
         }
     }
@@ -99,23 +168,21 @@ ${quotesText}
 
 Task: Create a short motivational message (2-3 sentences) that:
 1. Acknowledges their mood
-2. Incorporates one of the quotes naturally
+2. Incorporates one of the quotes naturally (if available)
 3. Ends with encouragement
 
 Message:
 `;
             
-            const result = await this.model.generateContent(promptText);
-            const response = result.response;
-            const text = response.text();
+            const text = await this._callGeminiAPI(promptText);
             
             return {
                 success: true,
-                message: text.trim()
+                message: text
             };
             
         } catch (error) {
-            console.error('Gemini error:', error);
+            console.error('❌ Gemini error:', error);
             return {
                 success: false,
                 error: error.message
@@ -128,7 +195,7 @@ Message:
      */
     async generateDailyAffirmation(userMood, userGoals) {
         try {
-            const goalsText = userGoals.join(', ');
+            const goalsText = userGoals.length > 0 ? userGoals.join(', ') : 'general wellness';
             
             const promptText = `
 Create a powerful first-person affirmation for someone who:
@@ -144,17 +211,15 @@ Requirements:
 Affirmation:
 `;
             
-            const result = await this.model.generateContent(promptText);
-            const response = result.response;
-            const text = response.text();
+            const text = await this._callGeminiAPI(promptText);
             
             return {
                 success: true,
-                affirmation: text.trim()
+                affirmation: text
             };
             
         } catch (error) {
-            console.error('Gemini error:', error);
+            console.error('❌ Gemini error:', error);
             return {
                 success: false,
                 error: error.message
@@ -181,17 +246,15 @@ Task: Provide a supportive, empathetic response (2-3 sentences):
 Response:
 `;
             
-            const result = await this.model.generateContent(promptText);
-            const response = result.response;
-            const text = response.text();
+            const text = await this._callGeminiAPI(promptText);
             
             return {
                 success: true,
-                feedback: text.trim()
+                feedback: text
             };
             
         } catch (error) {
-            console.error('Gemini error:', error);
+            console.error('❌ Gemini error:', error);
             return {
                 success: false,
                 error: error.message

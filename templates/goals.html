@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Your Goals - UpliftAI</title>
+    <link rel="stylesheet" href="/static/css/goals.css">
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="goals-card">
+            <header>
+                <h1>Welcome to UpliftAI</h1>
+                <p>Let's personalize your experience. Tell us a bit about yourself and what you want to achieve.</p>
+            </header>
+
+            <form id="goals-form" onsubmit="event.preventDefault(); saveProfile();">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="How should we call you?" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="Your age" min="13" max="120" required>
+                </div>
+
+                <div class="goals-section">
+                    <label>Select your goals (Choose multiple)</label>
+                    <div class="goals-grid">
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Reduce Stress">
+                            <i class='bx bx-spa'></i>
+                            <span>Reduce Stress</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Improve Sleep">
+                            <i class='bx bx-moon'></i>
+                            <span>Improve Sleep</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Boost Confidence">
+                            <i class='bx bx-trophy'></i>
+                            <span>Boost Confidence</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Manage Anxiety">
+                            <i class='bx bx-wind'></i>
+                            <span>Manage Anxiety</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Increase Focus">
+                            <i class='bx bx-target-lock'></i>
+                            <span>Increase Focus</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Better Relationships">
+                            <i class='bx bx-heart'></i>
+                            <span>Better Relationships</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Positive Thinking">
+                            <i class='bx bx-sun'></i>
+                            <span>Positive Thinking</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Emotional Balance">
+                            <i class='bx bx-water'></i>
+                            <span>Emotional Balance</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Self Discovery">
+                            <i class='bx bx-compass'></i>
+                            <span>Self Discovery</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)" data-value="Overcome Grief">
+                            <i class='bx bx-leaf'></i>
+                            <span>Overcome Grief</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Start My Journey</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const FIREBASE_API_KEY = "{{ firebase_api_key }}";
+    </script>
+    <script type="module" src="/static/js/FirebaseConfig.js"></script>
+    <script type="module" src="/static/js/goals.js"></script>
+</body>
+</html>
