@@ -1,13 +1,8 @@
-"""
-Simplified User Model for Firebase
-"""
 from datetime import datetime
 from typing import Optional, List
 
-
 class User:
-    """Core user model with profile"""
-    
+
     def __init__(
         self,
         user_id: str,

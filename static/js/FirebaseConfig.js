@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, set, get, child, update, remove, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
+import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-ai.js";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -14,8 +14,14 @@ const firebaseConfig = {
 };
 console.log("Firebase Config:", firebaseConfig);
 
+const ai = getAI(app, { backend: new GoogleAIBackend() });
+
+const geminiModel = getGenerativeModel(ai, { 
+    model: "gemini-2.5-flash"  
+});
 
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+
+export { app, database, ai, geminiModel };

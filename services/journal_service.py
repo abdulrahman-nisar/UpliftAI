@@ -1,6 +1,3 @@
-"""
-Journal Service - Journal entry operations
-"""
 from typing import Optional, Dict, List
 from models.journal_entry import JournalEntry
 from services.firebase_service import firebase_service

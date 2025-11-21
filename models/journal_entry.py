@@ -1,13 +1,8 @@
-"""
-Simplified Journal Entry Model
-"""
 from datetime import datetime
 from typing import Optional
 
 
 class JournalEntry:
-    """Daily journal entries"""
-    
     def __init__(
         self,
         journal_id: str,

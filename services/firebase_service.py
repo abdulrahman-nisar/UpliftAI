@@ -1,6 +1,3 @@
-"""
-Core Firebase Service using Firebase Admin SDK
-"""
 import firebase_admin
 from firebase_admin import credentials, db
 from typing import Optional, Dict, Any, List

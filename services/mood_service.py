@@ -1,6 +1,3 @@
-"""
-Mood Service - Mood tracking operations
-"""
 from typing import Optional, Dict, List
 from models.mood_entry import MoodEntry
 from services.firebase_service import firebase_service

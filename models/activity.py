@@ -1,12 +1,8 @@
-"""
-Simplified Activity Model
-"""
 from typing import List, Optional
 
 
 class Activity:
-    """Wellness activities (meditation, exercise, etc.)"""
-    
+
     def __init__(
         self,
         activity_id: str,

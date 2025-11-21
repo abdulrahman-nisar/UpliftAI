@@ -1,18 +1,14 @@
-"""
-Activity Service - Activity management operations
-"""
 from typing import Optional, Dict, List
 from models.activity import Activity
 from services.firebase_service import firebase_service
 
 
 class ActivityService:
-    """Service for activity operations"""
-    
+
     @staticmethod
     def create_activity(name: str, type: str, duration: int, 
                        description: str = None) -> Dict:
-        """Create a new activity"""
+
         try:
             # Generate unique ID
             activity_id = firebase_service.create('activities', {})
@@ -42,7 +38,6 @@ class ActivityService:
     
     @staticmethod
     def get_activity(activity_id: str) -> Dict:
-        """Get a specific activity"""
         try:
             path = f'activities/{activity_id}'
             data = firebase_service.get(path)
@@ -66,7 +61,6 @@ class ActivityService:
     
     @staticmethod
     def get_all_activities() -> Dict:
-        """Get all activities"""
         try:
             path = 'activities'
             data = firebase_service.get(path)
@@ -96,7 +90,6 @@ class ActivityService:
     
     @staticmethod
     def get_activities_by_type(activity_type: str) -> Dict:
-        """Get activities by type (Physical, Mental, Spiritual)"""
         try:
             path = 'activities'
             data = firebase_service.get(path)
@@ -127,7 +120,6 @@ class ActivityService:
     
     @staticmethod
     def update_activity(activity_id: str, data: Dict) -> Dict:
-        """Update an activity"""
         try:
             path = f'activities/{activity_id}'
             
@@ -161,7 +153,6 @@ class ActivityService:
     
     @staticmethod
     def delete_activity(activity_id: str) -> Dict:
-        """Delete an activity"""
         try:
             path = f'activities/{activity_id}'
             firebase_service.delete(path)
@@ -178,7 +169,6 @@ class ActivityService:
     
     @staticmethod
     def get_recommended_activities(mood: str = None, goals: List[str] = None) -> Dict:
-        """Get recommended activities based on mood and goals"""
         try:
             # This is a simple recommendation system
             # You can enhance this with ML later

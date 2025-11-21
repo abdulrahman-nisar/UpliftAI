@@ -1,13 +1,9 @@
-"""
-Simplified Mood Entry Model
-"""
 from datetime import datetime
 from typing import Optional
 
 
 class MoodEntry:
-    """Daily mood tracking"""
-    
+
     def __init__(
         self,
         entry_id: str,

@@ -1,12 +1,7 @@
-"""
-Simplified Psychological Content Model
-"""
 from typing import List, Optional
 
-
 class Content:
-    """Tips, quotes, affirmations for RAG retrieval"""
-    
+
     def __init__(
         self,
         content_id: str,
