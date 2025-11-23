@@ -111,7 +111,7 @@ async function loginUser() {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     showToast("Login successful!", "success");
        setTimeout(() => {
-      window.location.href = "/goals";
+      checkUserStatus();
     }, 1500);
   } catch (error) {
     showToast(error.message, "error");
@@ -128,7 +128,7 @@ async function loginWithGoogle() {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     showToast(`Welcome ${user.displayName}`, "success");
-   // checkUserStatus();
+    checkUserStatus();
   } catch (error) {
     showToast(error.message, "error");
   } finally {
@@ -140,9 +140,8 @@ async function loginWithGoogle() {
 function checkUserStatus() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // user is logged in — redirect or render new page
       console.log("Authenticated user:", user.email);
-      window.location.href = "/dashboard"; // example redirect
+      window.location.href = "/dashboard"; 
     } else {
       console.log("No user signed in");
     }

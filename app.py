@@ -20,6 +20,11 @@ def goals():
     firebase_api_key = os.getenv("FIREBASE_API_KEY")
     return render_template('goals.html', firebase_api_key=firebase_api_key)
 
+@app.route('/dashboard')
+def dashboard():
+    firebase_api_key = os.getenv("FIREBASE_API_KEY")
+    return render_template('dashboard.html', firebase_api_key=firebase_api_key)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
