@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - UpliftAI</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/Logo.ico">
+    <link rel="stylesheet" href="/static/css/journal.css">
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <img src="/static/images/Logo.svg" alt="UpliftAI" class="logo-img">
+                </div>
+                <i class='bx bx-menu' id="btn-close"></i>
+            </div>
+            
+            <ul class="nav-list">
+                <li>
+                    <a href="/today">
+                        <i class='bx bx-sun'></i>
+                        <span class="links_name">Today</span>
+                    </a>
+                    <span class="tooltip">Today</span>
+                </li>
+                <li>
+                    <a href="/journal" class="active">
+                        <i class='bx bx-book-heart'></i>
+                        <span class="links_name">Journal</span>
+                    </a>
+                    <span class="tooltip">Journal</span>
+                </li>
+                <li>
+                    <a href="/activity">
+                        <i class='bx bx-run'></i>
+                        <span class="links_name">Activity</span>
+                    </a>
+                    <span class="tooltip">Activity</span>
+                </li>
+            </ul>
+
+            <div class="new-entry-wrapper">
+                <button class="btn-new-entry" onclick="openNewEntryModal()">
+                    <i class='bx bx-plus'></i>
+                    <span class="links_name">New Entry</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <i class='bx bx-menu' id="btn-open"></i>
+                    <h1>My Journal</h1>
+                </div>
+                <div class="header-right">
+                    <a href="/profile" class="profile-link">
+                        <div id="header-profile-avatar" class="header-avatar-initials">US</div>
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- AI Section Grid -->
+                <div class="ai-section-grid">
+                    <!-- AI Suggestion Section -->
+                    <div class="ai-suggestion-card" id="ai-suggestion-card">
+                        <div class="suggestion-header">
+                            <div class="suggestion-title">
+                                <i class='bx bx-bulb'></i>
+                                <span>Daily Inspiration</span>
+                            </div>
+                            <button class="btn-refresh" onclick="refreshSuggestion()" title="Get new suggestion">
+                                <i class='bx bx-refresh'></i>
+                            </button>
+                        </div>
+                        <div class="suggestion-content" id="suggestion-content">
+                            <div class="loading-suggestion">
+                                <div class="typing-indicator">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <p>Gemini is crafting a thought for you...</p>
+                            </div>
+                        </div>
+                        <div class="suggestion-actions" id="suggestion-actions" style="display: none;">
+                            <button class="btn-use-prompt" onclick="usePrompt()">
+                                <i class='bx bx-edit-alt'></i> Write about this
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Daily Boost Section (Affirmation & Quote) -->
+                    <div class="daily-boost-column">
+                        <div class="boost-card affirmation-card">
+                            <div class="boost-header">
+                                <i class='bx bx-heart'></i>
+                                <span>Daily Affirmation</span>
+                            </div>
+                            <div id="affirmation-content" class="boost-content">
+                                <p class="placeholder-text">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="boost-card quote-card">
+                            <div class="boost-header">
+                                <i class='bx bxs-quote-alt-left'></i>
+                                <span>Quote of the Day</span>
+                            </div>
+                            <div id="quote-content" class="boost-content">
+                                <p class="placeholder-text">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search & Filter -->
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class='bx bx-search'></i>
+                        <input type="text" id="search-input" placeholder="Search entries...">
+                    </div>
+                    <button class="btn-primary" onclick="openJournalEditor()">
+                        <i class='bx bx-edit'></i> Write New
+                    </button>
+                </div>
+
+                <!-- Journal Entries Grid -->
+                <div id="journal-grid" class="journal-grid">
+                    <!-- Entries will be loaded here -->
+                    <div class="empty-state">
+                        <i class='bx bx-book-open'></i>
+                        <p>No entries yet. Start writing your story!</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Entry Modal (Generic) -->
+    <div id="entry-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeNewEntryModal()">&times;</span>
+            <h2>Create New Entry</h2>
+            <div class="entry-options">
+                <button onclick="openJournalEditor()" class="option-btn">
+                    <i class='bx bx-book'></i> Journal Entry
+                </button>
+                <button onclick="openMoodModal()" class="option-btn">
+                    <i class='bx bx-smile'></i> Log Mood
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Editor Modal -->
+    <div id="journal-editor-modal" class="modal full-screen-modal">
+        <div class="modal-content editor-content">
+            <div class="editor-header">
+                <h2><i class='bx bx-edit'></i> Write Journal</h2>
+                <span class="close-modal" onclick="closeJournalEditor()">&times;</span>
+            </div>
+            <form id="journal-form" onsubmit="event.preventDefault(); saveJournalEntry();">
+                <div class="form-group">
+                    <label for="journal-title">Title / Prompt</label>
+                    <input type="text" id="journal-title" placeholder="What's on your mind? (or use the AI prompt)" required class="editor-title">
+                </div>
+                <div class="form-group full-height">
+                    <label for="journal-content">Your Thoughts</label>
+                    <textarea id="journal-content" placeholder="Start writing..." required class="editor-body"></textarea>
+                </div>
+                <div class="editor-footer">
+                    <button type="button" class="btn-secondary" onclick="closeJournalEditor()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mood Modal (Same as Today Page) -->
+    <div id="mood-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeMoodModal()">&times;</span>
+            <h2>Log Mood</h2>
+            <form id="mood-form" onsubmit="event.preventDefault(); saveMoodEntry();">
+                <div class="form-group">
+                    <label>Mood</label>
+                    <select id="mood-select" required>
+                        <option value="Happy">Happy</option>
+                        <option value="Calm">Calm</option>
+                        <option value="Anxious">Anxious</option>
+                        <option value="Sad">Sad</option>
+                        <option value="Stressed">Stressed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Energy</label>
+                    <select id="energy-select">
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Entry Modal -->
+    <div id="view-entry-modal" class="modal full-screen-modal view-mode">
+        <div class="modal-content">
+            <div class="modal-header view-header-custom">
+                <button class="btn-icon delete-btn-corner" onclick="openConfirmModal()" title="Delete Entry">
+                    <i class='bx bx-trash'></i>
+                </button>
+                <span class="close-modal" onclick="closeViewModal()">&times;</span>
+            </div>
+            <div class="modal-body view-body">
+                <div class="view-meta-date">
+                    <span id="view-date" class="view-date"></span>
+                </div>
+                <h2 id="view-title" class="view-title"></h2>
+                <div class="view-content-wrapper">
+                    <p id="view-content" class="view-content"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content confirm-content">
+            <div class="confirm-icon">
+                <i class='bx bx-error-circle'></i>
+            </div>
+            <h3>Delete Entry?</h3>
+            <p>Are you sure you want to delete this journal entry? This action cannot be undone.</p>
+            <div class="confirm-actions">
+                <button class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn-danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading hidden"><div class="spinner"></div></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>const FIREBASE_API_KEY = "{{ firebase_api_key }}";</script>
+    <script type="module" src="/static/js/FirebaseConfig.js"></script>
+    <script type="module" src="/static/js/journal.js"></script>
+</body>
+</html>

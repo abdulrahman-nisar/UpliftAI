@@ -10,7 +10,7 @@ class GeminiService {
     constructor() {
         // Gemini API configuration
         this.apiKey = GEMINI_API_KEY;
-        this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent";
+        this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent";
         
         // System context for wellness companion
         this.systemContext = `
@@ -193,72 +193,43 @@ Message:
     /**
      * Generate daily affirmation
      */
-    async generateDailyAffirmation(userMood, userGoals) {
-        try {
-            const goalsText = userGoals.length > 0 ? userGoals.join(', ') : 'general wellness';
-            
-            const promptText = `
-Create a powerful first-person affirmation for someone who:
-- Current mood: ${userMood}
-- Goals: ${goalsText}
-
-Requirements:
-- Start with "I am..." or "I can..."
-- Be empowering and positive
-- Relate to their mood/goals
-- Maximum 15 words
-
-Affirmation:
-`;
-            
-            const text = await this._callGeminiAPI(promptText);
-            
-            return {
-                success: true,
-                affirmation: text
-            };
-            
-        } catch (error) {
-            console.error('❌ Gemini error:', error);
-            return {
-                success: false,
-                error: error.message
-            };
-        }
-    }
-    
-    /**
-     * Generate personalized response to journal entry
-     */
-    async generateJournalFeedback(journalContent, userMood) {
+    async generateDailyAffirmation(userMood) {
         try {
             const promptText = `
 ${this.systemContext}
 
-User's mood: ${userMood}
-User's journal entry: "${journalContent}"
-
-Task: Provide a supportive, empathetic response (2-3 sentences):
-- Acknowledge their feelings
-- Highlight any positive aspects
-- Offer gentle encouragement
-
-Response:
+TASK:
+Generate a short, powerful daily affirmation for someone feeling ${userMood}.
+It should be in the first person ("I am...").
+Keep it under 20 words.
+Do not use quotes.
 `;
-            
             const text = await this._callGeminiAPI(promptText);
-            
-            return {
-                success: true,
-                feedback: text
-            };
-            
+            return text;
         } catch (error) {
-            console.error('❌ Gemini error:', error);
-            return {
-                success: false,
-                error: error.message
-            };
+            console.error('❌ Affirmation generation error:', error);
+            return "I am capable of handling whatever comes my way.";
+        }
+    }
+
+    /**
+     * Generate a motivational quote
+     */
+    async generateQuote(userMood) {
+        try {
+            const promptText = `
+${this.systemContext}
+
+TASK:
+Generate a short motivational quote for someone feeling ${userMood}.
+Include the author name if real, or just the quote if generic.
+Keep it under 30 words.
+`;
+            const text = await this._callGeminiAPI(promptText);
+            return text;
+        } catch (error) {
+            console.error('❌ Quote generation error:', error);
+            return "Believe you can and you're halfway there.";
         }
     }
     

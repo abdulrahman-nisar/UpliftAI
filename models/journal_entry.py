@@ -21,6 +21,7 @@ class JournalEntry:
     
     def to_dict(self) -> dict:
         return {
+            'journal_id': self.journal_id,
             'user_id': self.user_id,
             'date': self.date,
             'content': self.content,

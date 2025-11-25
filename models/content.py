@@ -8,20 +8,23 @@ class Content:
         text: str,
         type: str,  # "Quote", "Tip", "Affirmation"
         category: str,  # "Stress", "Motivation", "Gratitude"
-        tags: Optional[List[str]] = None
+        tags: Optional[List[str]] = None,
+        author: Optional[str] = None
     ):
         self.content_id = content_id
         self.text = text
         self.type = type
         self.category = category
         self.tags = tags or []
+        self.author = author
     
     def to_dict(self) -> dict:
         return {
             'text': self.text,
             'type': self.type,
             'category': self.category,
-            'tags': self.tags
+            'tags': self.tags,
+            'author': self.author
         }
     
     @staticmethod
@@ -31,5 +34,6 @@ class Content:
             text=data.get('text'),
             type=data.get('type'),
             category=data.get('category'),
-            tags=data.get('tags', [])
+            tags=data.get('tags', []),
+            author=data.get('author')
         )

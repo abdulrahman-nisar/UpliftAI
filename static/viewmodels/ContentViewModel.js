@@ -4,7 +4,7 @@
  */
 
 import apiService from './ApiService.js';
-import geminiService from '../static/js/GeminiService.js';
+import geminiService from '../js/GeminiService.js'
 
 class ContentViewModel {
     constructor() {

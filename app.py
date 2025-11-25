@@ -20,10 +20,25 @@ def goals():
     firebase_api_key = os.getenv("FIREBASE_API_KEY")
     return render_template('goals.html', firebase_api_key=firebase_api_key)
 
-@app.route('/dashboard')
-def dashboard():
+@app.route('/today')
+def today():
     firebase_api_key = os.getenv("FIREBASE_API_KEY")
-    return render_template('dashboard.html', firebase_api_key=firebase_api_key)
+    return render_template('today.html', firebase_api_key=firebase_api_key)
+
+@app.route('/journal')
+def journal_page():
+    firebase_api_key = os.getenv("FIREBASE_API_KEY")
+    return render_template('journal.html', firebase_api_key=firebase_api_key)
+
+@app.route('/activity')
+def activity_page():
+    firebase_api_key = os.getenv("FIREBASE_API_KEY")
+    return render_template('activity.html', firebase_api_key=firebase_api_key)
+
+@app.route('/profile')
+def profile_page():
+    firebase_api_key = os.getenv("FIREBASE_API_KEY")
+    return render_template('profile.html', firebase_api_key=firebase_api_key)
 
 
 if __name__ == "__main__":

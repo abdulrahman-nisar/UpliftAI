@@ -525,6 +525,46 @@ def get_recommended_activities():
         }), 500
 
 
+@api.route('/activities/log', methods=['POST'])
+def log_user_activity():
+    """Log a user activity"""
+    try:
+        data = request.get_json()
+        
+        required = ['user_id', 'activity_name', 'duration', 'date']
+        if not validate_required_fields(data, required):
+            return jsonify({
+                'success': False,
+                'message': 'Missing required fields'
+            }), 400
+            
+        user_id = data.pop('user_id')
+        result = activity_service.log_user_activity(user_id, data)
+        
+        status_code = 201 if result['success'] else 400
+        return jsonify(result), status_code
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+
+@api.route('/activities/user/<user_id>', methods=['GET'])
+def get_user_activities(user_id):
+    """Get all activities for a user"""
+    try:
+        result = activity_service.get_user_activities(user_id)
+        return jsonify(result), 200
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+
 # ============================================
 # CONTENT ROUTES (RAG)
 # ============================================

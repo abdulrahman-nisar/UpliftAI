@@ -9,7 +9,7 @@ class ContentService:
     
     @staticmethod
     def create_content(text: str, type: str, category: str, 
-                      tags: List[str] = None) -> Dict:
+                      tags: List[str] = None, author: str = None) -> Dict:
         """Create new psychological content"""
         try:
             # Generate unique ID
@@ -20,7 +20,8 @@ class ContentService:
                 text=text,
                 type=type,
                 category=category,
-                tags=tags or []
+                tags=tags or [],
+                author=author
             )
             
             path = f'content/{content_id}'
@@ -297,47 +298,29 @@ class ContentService:
             }
     
     @staticmethod
-    def get_motivational_quote(category: str = None) -> Dict:
-        """Get a random motivational quote"""
-        try:
-            result = ContentService.get_content_by_type('Quote')
-            
-            if result['success'] and result['count'] > 0:
-                quotes = result['content']
-                
-                # Filter by category if provided
-                if category:
-                    quotes = [q for q in quotes if q.get('category', '').lower() == category.lower()]
-                
-                if quotes:
-                    selected_quote = random.choice(quotes)
-                    return {
-                        'success': True,
-                        'quote': selected_quote
-                    }
-            
+    def get_motivational_quote(category: str = None) -> Dict:    
             # Fallback quotes
             fallback_quotes = [
-                "Every day is a new beginning. Take a deep breath and start again.",
-                "You are stronger than you think.",
-                "Progress, not perfection.",
-                "Be kind to yourself. You're doing the best you can."
+                {"text": "Every day is a new beginning. Take a deep breath and start again.", "author": "Unknown"},
+                {"text": "You are stronger than you think.", "author": "Unknown"},
+                {"text": "Progress, not perfection.", "author": "Unknown"},
+                {"text": "Be kind to yourself. You're doing the best you can.", "author": "Unknown"},
+                {"text": "The only way to do great work is to love what you do.", "author": "Steve Jobs"},
+                {"text": "Believe you can and you're halfway there.", "author": "Theodore Roosevelt"},
+                {"text": "Don't watch the clock; do what it does. Keep going.", "author": "Sam Levenson"}
             ]
             
+            selected_fallback = random.choice(fallback_quotes)
             return {
                 'success': True,
                 'quote': {
-                    'text': random.choice(fallback_quotes),
+                    'text': selected_fallback['text'],
+                    'author': selected_fallback['author'],
                     'type': 'Quote',
                     'category': 'Motivation'
                 }
             }
-        except Exception as e:
-            return {
-                'success': False,
-                'message': f'Error getting quote: {str(e)}'
-            }
-    
+
     @staticmethod
     def get_wellness_tips(user_mood: str = None) -> Dict:
         """Get wellness tips based on user mood"""
@@ -359,7 +342,10 @@ class ContentService:
             fallback_tips = [
                 "Take 5 deep breaths when feeling overwhelmed.",
                 "Drink a glass of water and stretch for 2 minutes.",
-                "Write down 3 things you're grateful for today."
+                "Write down 3 things you're grateful for today.",
+                "Take a short walk outside to clear your mind.",
+                "Practice a quick mindfulness exercise for 5 minutes."
+
             ]
             
             return {

@@ -141,7 +141,7 @@ function checkUserStatus() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Authenticated user:", user.email);
-      window.location.href = "/dashboard"; 
+      window.location.href = "/today"; 
     } else {
       console.log("No user signed in");
     }

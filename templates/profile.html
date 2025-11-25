@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - UpliftAI</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/Logo.ico">
+    <link rel="stylesheet" href="/static/css/profile.css">
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <img src="/static/images/Logo.svg" alt="UpliftAI" class="logo-img">
+                </div>
+                <i class='bx bx-menu' id="btn-close"></i>
+            </div>
+            
+            <ul class="nav-list">
+                <li>
+                    <a href="/today">
+                        <i class='bx bx-sun'></i>
+                        <span class="links_name">Today</span>
+                    </a>
+                    <span class="tooltip">Today</span>
+                </li>
+                <li>
+                    <a href="/journal">
+                        <i class='bx bx-book-heart'></i>
+                        <span class="links_name">Journal</span>
+                    </a>
+                    <span class="tooltip">Journal</span>
+                </li>
+                <li>
+                    <a href="/activity">
+                        <i class='bx bx-run'></i>
+                        <span class="links_name">Activity</span>
+                    </a>
+                    <span class="tooltip">Activity</span>
+                </li>
+            </ul>
+
+            <div class="new-entry-wrapper">
+                <button class="btn-new-entry" onclick="openNewEntryModal()">
+                    <i class='bx bx-plus'></i>
+                    <span class="links_name">New Entry</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <i class='bx bx-menu' id="btn-open"></i>
+                    <h1>My Profile</h1>
+                </div>
+                <div class="header-right">
+                    <!-- Profile link is redundant here since we are on profile page, but keeping for consistency -->
+                    <a href="/profile" class="profile-link active">
+                        <div id="header-profile-avatar" class="header-avatar-initials">US</div>
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div class="profile-container">
+                    <!-- Profile Header -->
+                    <div class="profile-header-card">
+                        <div class="profile-cover"></div>
+                        <div class="profile-info">
+                            <div class="profile-img-wrapper">
+                                <div id="main-profile-avatar" class="profile-avatar-initials">US</div>
+                            </div>
+                            <h2 id="profile-name">Loading...</h2>
+                            <p id="profile-email">loading@example.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Profile Details -->
+                    <div class="profile-details-grid">
+                        <div class="card details-card">
+                            <div class="card-header">
+                                <h3>Personal Information</h3>
+                            </div>
+                            <form id="profile-form">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="input-name" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="input-email" disabled readonly>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card goals-card">
+                            <h3>My Goals</h3>
+                            <ul id="goals-list" class="goals-list">
+                                <!-- Goals loaded here -->
+                                <li>Loading goals...</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="logout-section">
+                        <button onclick="logout()" class="btn-logout">
+                            <i class='bx bx-log-out'></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Entry Modal (Generic) -->
+    <div id="entry-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeNewEntryModal()">&times;</span>
+            <h2>Create New Entry</h2>
+            <div class="entry-options">
+                <button onclick="window.location.href='/journal?new=true'" class="option-btn">
+                    <i class='bx bx-book'></i> Journal Entry
+                </button>
+                <button onclick="window.location.href='/today'" class="option-btn">
+                    <i class='bx bx-smile'></i> Log Mood
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading hidden"><div class="spinner"></div></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>const FIREBASE_API_KEY = "{{ firebase_api_key }}";</script>
+    <script type="module" src="/static/js/FirebaseConfig.js"></script>
+    <script type="module" src="/static/js/profile.js"></script>
+</body>
+</html>

@@ -92,7 +92,7 @@ window.saveProfile = async function() {
             showToast("Profile created successfully!", "success");
             // Redirect to dashboard after short delay
             setTimeout(() => {
-                window.location.href = "/dashboard"; // Assuming dashboard route exists or will be created
+                window.location.href = "/today"; // Assuming dashboard route exists or will be created
             }, 1500);
         } else {
             showToast(result.error || "Failed to create profile", "error");
