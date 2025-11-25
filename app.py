@@ -5,10 +5,10 @@ import os
 from api.routes import api
 
 app = Flask(__name__)
-CORS(app) # Enable CORS for all routes
-app.register_blueprint(api) # Register API Blueprint
+CORS(app) 
+app.register_blueprint(api) 
 
-load_dotenv()  # loads .env variables
+load_dotenv() 
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
