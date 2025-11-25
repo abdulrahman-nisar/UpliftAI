@@ -1,53 +1,112 @@
 # UpliftAI - RAG-Based Mental Wellness Journal 🌟
 
-A comprehensive daily routine journal application aimed at psychological improvement for users aged 12-30. Built with Flask backend, Firebase for authentication and database, and vanilla JavaScript frontend with AI-powered recommendations.
+UpliftAI is an intelligent mental wellness companion designed to help users track their emotional well-being, set psychological goals, and engage in meaningful self-reflection. 
 
-## 📋 Features
+Unlike standard journaling apps, UpliftAI utilizes **Retrieval-Augmented Generation (RAG)** powered by **Google's Gemini AI**. It analyzes your current mood and energy levels, retrieves relevant psychological tips and quotes from a curated knowledge base, and generates personalized, empathetic journaling prompts to guide your writing.
 
-### Core Features
-- **User Authentication** - Firebase Auth with email/password and Google Sign-in
-- **Personalized Onboarding** - Custom profile creation with psychological goals
-- **Daily Mood Tracking** - Track mood, energy, focus, stress, and sleep quality
-- **Journal Entries** - Multiple entry types (morning/evening reflections, gratitude, stress logs)
-- **Goal Management** - Create and track psychological wellness goals
-- **Activity Tracking** - Log and track mental wellness activities
-- **Daily Routines** - Create custom routines with activity combinations
-- **AI Recommendations** - Personalized suggestions based on mood, goals, and patterns
-- **Progress Analytics** - View progress metrics, streaks, and insights
+## 🚀 Key Features
 
-## 🚀 Quick Start
+### 🧠 AI-Powered Journaling (RAG)
+- **Context-Aware Prompts:** The system combines your current mood with relevant wellness content to generate unique writing prompts using Gemini AI.
+- **Empathetic Companion:** Acts as a supportive guide rather than just a text editor.
 
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
+### 📊 Mood & Energy Tracking
+- **Daily Check-ins:** Log your mood (Happy, Anxious, Sad, etc.) and energy levels.
+- **Visual Analytics:** Track emotional trends over time to identify patterns.
+
+### 🎯 Goal Management
+- **Psychological Goals:** Set and track specific wellness objectives (e.g., "Reduce Anxiety", "Improve Sleep").
+- **Progress Tracking:** Monitor your journey towards better mental health.
+
+### 🧘 Wellness Activities
+- **Curated Routines:** Access a library of mental health activities (meditation, breathing exercises, gratitude logging).
+- **Custom Routines:** Build your own daily wellness plan.
+
+### 🎨 Modern UI/UX
+- **Glassmorphism Design:** A calming, aesthetic interface designed to reduce visual stress.
+- **Responsive Layout:** Works seamlessly across desktop and tablet sizes.
+- **Dark Mode:** Built with a dark-themed aesthetic for comfortable night-time usage.
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python (Flask)
+- **Database & Auth:** Google Firebase (Firestore & Authentication)
+- **AI Engine:** Google Gemini API (Generative Language Model)
+- **Frontend:** HTML5, CSS3 (Custom Glassmorphism), Vanilla JavaScript
+- **Architecture:** MVC (Model-View-Controller) with Service-Repository pattern
+
+## 📂 Project Structure
+
+```
+UpliftAI/
+├── api/                 # API Routes and Blueprints
+├── models/              # Data Models (User, JournalEntry, MoodEntry)
+├── services/            # Business Logic (Gemini, Firebase, Content)
+├── static/
+│   ├── css/             # Custom Stylesheets (Glassmorphism)
+│   ├── js/              # Frontend Logic & ViewModels
+│   └── images/          # Assets
+├── templates/           # HTML Templates (Jinja2)
+├── utils/               # Helper functions and validators
+├── viewmodels/          # Frontend Data Binding Logic
+├── app.py               # Application Entry Point
+└── requirements.txt     # Python Dependencies
 ```
 
-### 2. Setup Environment
-Copy `.env.example` to `.env` and add your Firebase credentials and secret key.
+## ⚡ Quick Start Guide
 
-### 3. Initialize & Run
-```bash
-python app.py
-```
-Visit `http://localhost:5000`
+### Prerequisites
+- Python 3.8+
+- A Firebase Project (with Firestore & Auth enabled)
+- A Google Cloud Project (with Gemini API enabled)
 
-### 4. First Use
-- Signup/Login via Firebase (currently demo redirect uses a mock profile on dashboard).
-- Dashboard auto seeds base activities, tips, and affirmation corpus.
+### Installation
 
-## 🧠 Data Model Overview
-`User(id, firebase_uid, email, age, gender, goals)`
-`MoodLog(id, user_id, date, mood, energy, focus, stress_level, sleep_quality, notes)`
-`JournalEntry(id, user_id, entry_type, content, sentiment, created_at)`
-`Activity(id, name, category, description)`
-`Routine(id, user_id, name, is_active, created_at)` + `RoutineItem(routine_id, activity_id, order_index, recommended_duration)`
-`Tip(id, text, category, tags)`
-`Affirmation(id, text, tags)`
-`PromptTemplate(id, template, category)`
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/UpliftAI.git
+   cd UpliftAI
+   ```
 
-## 🔌 API Blueprint (`/api`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+2. **Create Virtual Environment**
+   ```bash
+   python -m venv .venv
+   # Windows
+   .venv\Scripts\activate
+   # Mac/Linux
+   source .venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Environment Configuration**
+   Create a `.env` file in the root directory:
+   ```env
+   FLASK_APP=app.py
+   FLASK_ENV=development
+   FIREBASE_API_KEY=your_firebase_api_key
+   # Add other Firebase config keys as needed by your setup
+   ```
+   *Note: Ensure your `static/js/config.js` or environment variables are set up with your Gemini API Key.*
+
+5. **Run the Application**
+   ```bash
+   python app.py
+   ```
+   Access the app at `http://localhost:5000`
+
+## 🔒 Security & Privacy
+- **Authentication:** Secure login/signup flows handled via Firebase Auth.
+- **Data Privacy:** User journals and mood logs are stored securely in Firestore with user-level isolation.
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+This project is licensed under the MIT License.
 | POST   | /api/profile          | Create/update user profile |
 | GET    | /api/profile?email=   | Retrieve profile by email |
 | POST   | /api/moodlogs         | Create mood log |
