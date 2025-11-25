@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/f
 import activityViewModel from '../viewmodels/ActivityViewModel.js';
 import userViewModel from '../viewmodels/UserViewModel.js';
 
-// DOM Elements
+
 const sidebar = document.querySelector(".sidebar");
 const closeBtn = document.querySelector("#btn-close");
 const openBtn = document.querySelector("#btn-open");
@@ -12,7 +12,6 @@ const activityModal = document.getElementById("activity-modal");
 const loadingSpinner = document.getElementById('loading');
 const activityList = document.getElementById('activity-list');
 
-// Sidebar Logic
 closeBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
     sidebar.classList.toggle("collapsed");
@@ -33,7 +32,7 @@ function menuBtnChange() {
     }
 }
 
-// Modal Logic
+
 window.openNewEntryModal = () => {
     entryModal.style.display = "block";
 }
@@ -61,13 +60,12 @@ window.onclick = (event) => {
     }
 }
 
-// Auth & Data Loading
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             showLoading(true);
             
-            // Load User Profile for Avatar
             const profileResponse = await userViewModel.getUserProfile(user.uid);
             if (profileResponse.success) {
                 const initials = getInitials(profileResponse.user.username || 'User');
@@ -75,7 +73,6 @@ onAuthStateChanged(auth, async (user) => {
                 if (avatarEl) avatarEl.textContent = initials;
             }
             
-            // Load Activities
             await loadActivities(user.uid);
 
         } catch (error) {
@@ -125,7 +122,7 @@ function renderActivities(activities) {
         return;
     }
 
-    // Sort by date descending
+    
     activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     activities.forEach(activity => {
@@ -136,7 +133,7 @@ function renderActivities(activities) {
             weekday: 'short', month: 'short', day: 'numeric'
         });
         
-        // Icon mapping
+        
         let iconClass = 'bx-run';
         if (activity.type === 'Cycling') iconClass = 'bx-cycling';
         if (activity.type === 'Yoga') iconClass = 'bx-body';
@@ -172,7 +169,6 @@ function updateStats(activities) {
     document.getElementById('total-duration').textContent = `${totalDuration} mins`;
 }
 
-// Save Activity
 window.saveActivityEntry = async () => {
     const user = auth.currentUser;
     if (!user) return;
@@ -215,7 +211,7 @@ window.saveActivityEntry = async () => {
     }
 };
 
-// Helper Functions
+
 function showLoading(show) {
     if (show) loadingSpinner.classList.remove('hidden');
     else loadingSpinner.classList.add('hidden');

@@ -1,7 +1,6 @@
 from typing import Optional, Dict, List
 from models.user import User
 from services.firebase_service import firebase_service
-from datetime import datetime
 
 
 class UserService:

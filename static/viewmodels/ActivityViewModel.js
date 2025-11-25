@@ -1,8 +1,3 @@
-/**
- * Activity ViewModel
- * Manages activity data and operations
- */
-
 import apiService from './ApiService.js';
 
 class ActivityViewModel {
@@ -14,9 +9,6 @@ class ActivityViewModel {
         this.error = null;
     }
 
-    /**
-     * Create activity (Admin only)
-     */
     async createActivity(name, type, duration, description = '') {
         this.isLoading = true;
         this.error = null;
@@ -54,9 +46,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get all activities
-     */
+
     async getAllActivities() {
         this.isLoading = true;
         this.error = null;
@@ -89,9 +79,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get specific activity
-     */
+
     async getActivity(activityId) {
         this.isLoading = true;
         this.error = null;
@@ -123,9 +111,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get activities by type
-     */
+
     async getActivitiesByType(type) {
         this.isLoading = true;
         this.error = null;
@@ -157,9 +143,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get recommended activities based on mood and goals
-     */
+
     async getRecommendedActivities(mood = null, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -196,9 +180,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Update activity (Admin only)
-     */
+
     async updateActivity(activityId, updateData) {
         this.isLoading = true;
         this.error = null;
@@ -229,9 +211,7 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Delete activity (Admin only)
-     */
+
     async deleteActivity(activityId) {
         this.isLoading = true;
         this.error = null;
@@ -240,7 +220,7 @@ class ActivityViewModel {
             const response = await apiService.delete(`/activities/${activityId}`);
 
             if (response.success) {
-                // Remove from local array
+               
                 this.activities = this.activities.filter(a => a.activity_id !== activityId);
                 return {
                     success: true,
@@ -264,9 +244,6 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Log a user activity
-     */
     async logActivity(activityData) {
         this.isLoading = true;
         this.error = null;
@@ -297,9 +274,6 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get user activities
-     */
     async getUserActivities(userId) {
         this.isLoading = true;
         this.error = null;
@@ -332,23 +306,17 @@ class ActivityViewModel {
         }
     }
 
-    /**
-     * Get activities
-     */
+
     getActivities() {
         return this.activities;
     }
 
-    /**
-     * Get recommended activities
-     */
+
     getRecommendations() {
         return this.recommendedActivities;
     }
 
-    /**
-     * Clear activities
-     */
+
     clearActivities() {
         this.activities = [];
         this.currentActivity = null;
@@ -357,6 +325,6 @@ class ActivityViewModel {
     }
 }
 
-// Export singleton instance
+
 const activityViewModel = new ActivityViewModel();
 export default activityViewModel;

@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Dict, List
 from models.activity import Activity
 from services.firebase_service import firebase_service
 

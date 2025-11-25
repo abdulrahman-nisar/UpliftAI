@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Dict, List
 from models.content import Content
 from services.firebase_service import firebase_service
 import random

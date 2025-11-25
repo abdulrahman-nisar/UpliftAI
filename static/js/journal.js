@@ -5,7 +5,7 @@ import moodViewModel from '../viewmodels/MoodViewModel.js';
 import userViewModel from '../viewmodels/UserViewModel.js';
 import geminiService from './GeminiService.js';
 
-// DOM Elements
+
 const sidebar = document.querySelector(".sidebar");
 const closeBtn = document.querySelector("#btn-close");
 const openBtn = document.querySelector("#btn-open");
@@ -17,7 +17,7 @@ const searchInput = document.getElementById('search-input');
 
 let allEntries = [];
 
-// Sidebar Logic
+
 closeBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
     sidebar.classList.toggle("collapsed");
@@ -38,7 +38,7 @@ function menuBtnChange() {
     }
 }
 
-// Modal Logic
+
 window.openNewEntryModal = () => {
     entryModal.style.display = "block";
 }
@@ -83,7 +83,6 @@ window.saveMoodEntry = async () => {
         if (response.success) {
             showToast("Mood logged successfully!", "success");
             closeMoodModal();
-            // Optionally refresh suggestions based on new mood
             loadSuggestion(user.uid);
         } else {
             showToast("Failed to log mood", "error");
@@ -96,7 +95,7 @@ window.saveMoodEntry = async () => {
     }
 };
 
-// View Entry Logic
+
 const viewModal = document.getElementById('view-entry-modal');
 const confirmModal = document.getElementById('confirm-modal');
 let currentEntryId = null;
@@ -108,7 +107,7 @@ window.closeViewModal = () => {
 }
 
 window.viewEntry = (entry) => {
-    currentEntryId = entry.journal_id; // Ensure backend returns journal_id
+    currentEntryId = entry.journal_id; 
     document.getElementById('view-title').textContent = entry.prompt || 'Untitled';
     document.getElementById('view-content').textContent = entry.content;
     
@@ -120,7 +119,7 @@ window.viewEntry = (entry) => {
     viewModal.style.display = "block";
 }
 
-// Confirmation Modal Logic
+
 window.openConfirmModal = (id = null) => {
     entryToDeleteId = id || currentEntryId;
     if (!entryToDeleteId) return;
@@ -132,7 +131,7 @@ window.closeConfirmModal = () => {
     entryToDeleteId = null;
 }
 
-// Setup Delete Button Listener
+
 document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
     if (entryToDeleteId) {
         await performDelete(entryToDeleteId);
@@ -151,7 +150,7 @@ async function performDelete(journalId) {
         if (response.success) {
             showToast("Entry deleted successfully", "success");
             
-            // If we deleted the currently viewed entry, close the view modal
+            
             if (currentEntryId === journalId) {
                 closeViewModal();
             }
@@ -168,7 +167,7 @@ async function performDelete(journalId) {
     }
 }
 
-// Legacy wrapper for grid view delete icon
+
 window.deleteEntry = (journalId) => {
     openConfirmModal(journalId);
 };
@@ -195,14 +194,12 @@ window.onclick = (event) => {
     }
 }
 
-// Auth & Data Loading
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             showLoading(true);
-            // const token = await user.getIdToken();
             
-            // Load User Profile for Avatar
             const profileResponse = await userViewModel.getUserProfile(user.uid);
             if (profileResponse.success) {
                 const initials = getInitials(profileResponse.user.username || 'User');
@@ -210,13 +207,11 @@ onAuthStateChanged(auth, async (user) => {
                 if (avatarEl) avatarEl.textContent = initials;
             }
 
-            // Load Journal Entries
+            
             await loadEntries(user.uid);
-
-            // Load AI Suggestion
             loadSuggestion(user.uid);
 
-            // Check URL params
+            
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('new') === 'true') {
                 openJournalEditor();
@@ -288,14 +283,14 @@ function renderEntries(entries) {
             <div class="card-preview">${entry.content}</div>
         `;
         
-        // Add click handler to view details
+        
         card.onclick = () => window.viewEntry(entry);
         
         journalGrid.appendChild(card);
     });
 }
 
-// Search Logic
+
 searchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = allEntries.filter(entry => 
@@ -305,7 +300,7 @@ searchInput.addEventListener('input', (e) => {
     renderEntries(filtered);
 });
 
-// Save Entry
+
 window.saveJournalEntry = async () => {
     const user = auth.currentUser;
     if (!user) return;
@@ -316,12 +311,11 @@ window.saveJournalEntry = async () => {
     try {
         showLoading(true);
         
-        // We use the 'prompt' field to store the title as requested
         await journalViewModel.createJournalEntry(user.uid, content, title);
         
         showToast("Entry saved successfully!", "success");
         closeJournalEditor();
-        await loadEntries(user.uid); // Reload list
+        await loadEntries(user.uid); 
     } catch (error) {
         console.error("Error saving entry:", error);
         showToast("Failed to save entry", "error");
@@ -330,7 +324,7 @@ window.saveJournalEntry = async () => {
     }
 };
 
-// AI Suggestion Logic
+
 let currentPrompt = "";
 
 async function loadSuggestion(userId) {
@@ -339,7 +333,7 @@ async function loadSuggestion(userId) {
     
     if (!suggestionContent) return;
 
-    // Show loading state
+    
     suggestionContent.innerHTML = `
         <div class="loading-suggestion">
             <div class="typing-indicator">
@@ -351,26 +345,21 @@ async function loadSuggestion(userId) {
     suggestionActions.style.display = 'none';
 
     try {
-        // 1. Get User Context (Mood & Recent Journals)
-        // We already have allEntries from loadEntries
+
         const recentJournals = allEntries.slice(0, 3).map(e => e.content);
         
-        // Get latest mood
         let userMood = "neutral";
         const moodResponse = await moodViewModel.getUserMoods(userId, 1);
         if (moodResponse.success && moodResponse.moods.length > 0) {
             userMood = moodResponse.moods[0].mood;
         }
 
-        // 2. Generate Prompt via Gemini
         const promptResponse = await geminiService.generateJournalPrompt(userMood, [], [], recentJournals);
         currentPrompt = promptResponse.prompt;
 
-        // 3. Display Result
         suggestionContent.innerHTML = `<p>"${currentPrompt}"</p>`;
         suggestionActions.style.display = 'flex';
 
-        // 4. Load Affirmation & Quote
         loadAffirmation(userMood);
         loadQuote(userMood);
 
@@ -415,11 +404,11 @@ window.usePrompt = () => {
     const titleInput = document.getElementById('journal-title');
     if (titleInput) {
         titleInput.value = currentPrompt;
-        // document.getElementById('journal-content').focus();
+        
     }
 };
 
-// Helper Functions
+
 function showLoading(show) {
     if (show) loadingSpinner.classList.remove('hidden');
     else loadingSpinner.classList.add('hidden');

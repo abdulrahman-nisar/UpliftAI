@@ -1,18 +1,9 @@
-/**
- * Gemini AI Service using Direct REST API
- * Handles all AI/LLM-based content generation
- */
-
-// Import config for API key
 import { GEMINI_API_KEY } from './config.js';
 
 class GeminiService {
     constructor() {
-        // Gemini API configuration
         this.apiKey = GEMINI_API_KEY;
         this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent";
-        
-        // System context for wellness companion
         this.systemContext = `
 You are a compassionate mental wellness companion for young adults (ages 12-30).
 Your role:
@@ -22,8 +13,7 @@ Your role:
 - Be encouraging and warm
 - Keep responses concise (under 150 words)
 - Use simple, friendly language
-`;
-        
+`;    
         console.log("✅ Gemini AI Service initialized");
         
         // Validate API key
@@ -32,9 +22,6 @@ Your role:
         }
     }
     
-    /**
-     * Internal method to call Gemini API
-     */
     async _callGeminiAPI(promptText) {
         try {
             const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
@@ -74,7 +61,6 @@ Your role:
             
             const data = await response.json();
             
-            // Extract text from response
             const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
             
             if (!text) {
@@ -89,14 +75,10 @@ Your role:
         }
     }
     
-    /**
-     * Generate personalized journal prompt using RAG + Gemini
-     */
     async generateJournalPrompt(userMood, retrievedTips, retrievedQuotes, recentJournals = []) {
         try {
             console.log(`🤖 Generating journal prompt for mood: ${userMood}`);
-            
-            // Build context from retrieved content
+
             const tipsText = this._formatList(retrievedTips);
             const quotesText = this._formatList(retrievedQuotes);
             const journalsText = recentJournals.length > 0 ? recentJournals.join(', ') : 'None';
@@ -113,7 +95,6 @@ ${quotesText}
 RECENT JOURNAL THEMES: ${journalsText}
 `;
             
-            // Create prompt for Gemini
             const promptText = `
 ${this.systemContext}
 
@@ -132,8 +113,7 @@ Requirements:
 
 Generate only the journal prompt text, nothing else.
 `;
-            
-            // Call Gemini API
+
             const text = await this._callGeminiAPI(promptText);
             
             console.log('✅ Journal prompt generated successfully');
@@ -151,9 +131,6 @@ Generate only the journal prompt text, nothing else.
         }
     }
     
-    /**
-     * Generate motivational message
-     */
     async generateMotivationalMessage(userMood, retrievedQuotes) {
         try {
             const quotesText = this._formatList(retrievedQuotes);
@@ -189,10 +166,7 @@ Message:
             };
         }
     }
-    
-    /**
-     * Generate daily affirmation
-     */
+
     async generateDailyAffirmation(userMood) {
         try {
             const promptText = `
@@ -212,9 +186,6 @@ Do not use quotes.
         }
     }
 
-    /**
-     * Generate a motivational quote
-     */
     async generateQuote(userMood) {
         try {
             const promptText = `
@@ -232,8 +203,7 @@ Keep it under 30 words.
             return "Believe you can and you're halfway there.";
         }
     }
-    
-    // Helper methods
+
     _formatList(items) {
         if (!items || items.length === 0) return 'None';
         return items.slice(0, 3).map(item => `- ${item}`).join('\n');
@@ -258,6 +228,5 @@ Keep it under 30 words.
     }
 }
 
-// Export singleton instance
 const geminiService = new GeminiService();
 export default geminiService;

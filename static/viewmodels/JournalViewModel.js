@@ -1,8 +1,3 @@
-/**
- * Journal ViewModel
- * Manages journal entries data and operations
- */
-
 import apiService from './ApiService.js';
 
 class JournalViewModel {
@@ -13,9 +8,7 @@ class JournalViewModel {
         this.error = null;
     }
 
-    /**
-     * Create journal entry
-     */
+
     async createJournalEntry(userId, content, prompt = '', date = null) {
         this.isLoading = true;
         this.error = null;
@@ -58,9 +51,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Get all user journals
-     */
+
     async getUserJournals(userId, limit = null) {
         this.isLoading = true;
         this.error = null;
@@ -94,9 +85,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Get specific journal entry
-     */
+
     async getJournalEntry(userId, journalId) {
         this.isLoading = true;
         this.error = null;
@@ -128,9 +117,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Update journal entry
-     */
+
     async updateJournalEntry(userId, journalId, updateData) {
         this.isLoading = true;
         this.error = null;
@@ -161,9 +148,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Delete journal entry
-     */
+ 
     async deleteJournalEntry(userId, journalId) {
         this.isLoading = true;
         this.error = null;
@@ -172,7 +157,6 @@ class JournalViewModel {
             const response = await apiService.delete(`/journals/${userId}/${journalId}`);
 
             if (response.success) {
-                // Remove from local array
                 this.journals = this.journals.filter(j => j.journal_id !== journalId);
                 return {
                     success: true,
@@ -196,9 +180,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Search journals
-     */
+
     async searchJournals(userId, keyword) {
         this.isLoading = true;
         this.error = null;
@@ -232,9 +214,7 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Get journals by date range
-     */
+
     async getJournalsByDateRange(userId, startDate, endDate) {
         this.isLoading = true;
         this.error = null;
@@ -269,16 +249,12 @@ class JournalViewModel {
         }
     }
 
-    /**
-     * Get all journals
-     */
+
     getAllJournals() {
         return this.journals;
     }
 
-    /**
-     * Clear journals
-     */
+
     clearJournals() {
         this.journals = [];
         this.currentJournal = null;
@@ -286,6 +262,6 @@ class JournalViewModel {
     }
 }
 
-// Export singleton instance
+
 const journalViewModel = new JournalViewModel();
 export default journalViewModel;

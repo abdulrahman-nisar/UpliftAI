@@ -5,7 +5,7 @@ import moodViewModel from '../viewmodels/MoodViewModel.js';
 import journalViewModel from '../viewmodels/JournalViewModel.js';
 import contentViewModel from '../viewmodels/ContentViewModel.js';
 
-// DOM Elements
+
 const sidebar = document.querySelector(".sidebar");
 const closeBtn = document.querySelector("#btn-close");
 const openBtn = document.querySelector("#btn-open");
@@ -13,7 +13,7 @@ const entryModal = document.getElementById("entry-modal");
 const moodModal = document.getElementById("mood-modal");
 const loadingSpinner = document.getElementById('loading');
 
-// Calendar Elements
+
 const currentMonthEl = document.getElementById('current-month');
 const calendarGridEl = document.getElementById('calendar-grid');
 const prevMonthBtn = document.getElementById('prev-month');
@@ -21,7 +21,7 @@ const nextMonthBtn = document.getElementById('next-month');
 
 let currentDate = new Date();
 
-// Sidebar Logic
+
 closeBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
     sidebar.classList.toggle("collapsed");
@@ -42,7 +42,7 @@ function menuBtnChange() {
     }
 }
 
-// Modal Logic
+
 window.openNewEntryModal = () => {
     entryModal.style.display = "block";
 }
@@ -69,34 +69,29 @@ window.onclick = (event) => {
     }
 }
 
-// Auth & Data Loading
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             showLoading(true);
             
-            // Set Greeting based on time
+            
             setGreeting();
 
-            // Load User Profile
+            
             const response = await userViewModel.getUserProfile(user.uid);
             if (response.success) {
                 const userData = response.user;
                 setGreeting(userData.username || 'Friend');
                 
-                // Set Avatar Initials
+                
                 const initials = getInitials(userData.username || 'User');
                 const avatarEl = document.getElementById('header-profile-avatar');
                 if (avatarEl) avatarEl.textContent = initials;
             }
-
-            // Load Stats (Total Entries & Streak)
-            await loadStats(user.uid);
-
-            // Load Wellness Tip & Quote
+            
+            await loadStats(user.uid);     
             loadDailyContent();
-
-            // Render Calendar
             renderCalendar();
 
         } catch (error) {
@@ -133,13 +128,12 @@ function getInitials(name) {
 
 async function loadStats(userId) {
     try {
-        // Fetch Journal Count
+
         const journalResponse = await journalViewModel.getUserJournals(userId);
         if (journalResponse.success) {
             const journals = journalResponse.journals || [];
             document.getElementById('total-entries').textContent = journals.length;
             
-            // Calculate Streak
             const streak = calculateStreak(journals);
             document.getElementById('streak-count').textContent = `${streak} Days`;
         }
@@ -151,11 +145,9 @@ async function loadStats(userId) {
 function calculateStreak(journals) {
     if (!journals || journals.length === 0) return 0;
 
-    // Extract dates and sort ascending
     const dates = journals.map(j => new Date(j.date).setHours(0,0,0,0))
                           .sort((a, b) => a - b);
     
-    // Remove duplicates
     const uniqueDates = [...new Set(dates)];
 
     if (uniqueDates.length === 0) return 0;
@@ -183,15 +175,12 @@ function calculateStreak(journals) {
 
 async function loadDailyContent() {
     try {
-        // Load Wellness Tip
         const tipsResponse = await contentViewModel.getWellnessTips();
         if (tipsResponse.success && tipsResponse.tips.length > 0) {
-            // Pick a random tip from the response
             const randomTip = tipsResponse.tips[Math.floor(Math.random() * tipsResponse.tips.length)];
             document.getElementById('wellness-tip').textContent = randomTip.text;
         }
 
-        // Load Daily Quote
         const quoteResponse = await contentViewModel.getMotivationalQuote();
         if (quoteResponse.success && quoteResponse.quote) {
             const quote = quoteResponse.quote;
@@ -203,7 +192,7 @@ async function loadDailyContent() {
     }
 }
 
-// Calendar Logic
+
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -216,7 +205,6 @@ function renderCalendar() {
     currentMonthEl.textContent = `${months[month]} ${year}`;
     calendarGridEl.innerHTML = "";
 
-    // Day Headers
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     days.forEach(day => {
         const dayHeader = document.createElement("div");
@@ -225,14 +213,14 @@ function renderCalendar() {
         calendarGridEl.appendChild(dayHeader);
     });
 
-    // Empty slots for previous month
+
     for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement("div");
         emptyCell.classList.add("calendar-day", "empty");
         calendarGridEl.appendChild(emptyCell);
     }
 
-    // Days of current month
+    
     const today = new Date();
     for (let i = 1; i <= lastDate; i++) {
         const dayCell = document.createElement("div");
@@ -257,15 +245,13 @@ nextMonthBtn.addEventListener('click', () => {
     renderCalendar();
 });
 
-// Quick Mood Logging
+
 window.quickLogMood = async (mood) => {
     const user = auth.currentUser;
     if (!user) return;
 
     try {
         showLoading(true);
-        // const token = await user.getIdToken();
-        
         await moodViewModel.createMoodEntry(user.uid, mood, "Medium", "Quick check-in from Today page");
         showToast(`Mood logged: ${mood}`, "success");
     } catch (error) {
@@ -285,8 +271,6 @@ window.saveMoodEntry = async () => {
 
     try {
         showLoading(true);
-        // const token = await user.getIdToken();
-        
         await moodViewModel.createMoodEntry(user.uid, mood, energy, "Logged from Today page");
         showToast("Mood saved successfully!", "success");
         closeMoodModal();
@@ -298,7 +282,6 @@ window.saveMoodEntry = async () => {
     }
 };
 
-// Helper Functions
 function showLoading(show) {
     if (show) loadingSpinner.classList.remove('hidden');
     else loadingSpinner.classList.add('hidden');
@@ -310,7 +293,6 @@ function showToast(message, type = 'info') {
     toast.className = `toast ${type}`;
     toast.textContent = message;
     
-    // Add some basic styling for toast if not in CSS yet
     toast.style.background = type === 'error' ? '#ff6b6b' : '#6C63FF';
     toast.style.color = '#fff';
     toast.style.padding = '12px 24px';

@@ -1,8 +1,3 @@
-/**
- * Base API Service
- * Handles all HTTP requests to the Flask backend
- */
-
 class ApiService {
     constructor() {
         this.baseURL = '/api';
@@ -11,9 +6,7 @@ class ApiService {
         };
     }
 
-    /**
-     * GET request
-     */
+
     async get(endpoint, params = {}) {
         try {
             const queryString = new URLSearchParams(params).toString();
@@ -30,9 +23,7 @@ class ApiService {
         }
     }
 
-    /**
-     * POST request
-     */
+
     async post(endpoint, data = {}) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -47,9 +38,7 @@ class ApiService {
         }
     }
 
-    /**
-     * PUT request
-     */
+
     async put(endpoint, data = {}) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -64,9 +53,7 @@ class ApiService {
         }
     }
 
-    /**
-     * DELETE request
-     */
+
     async delete(endpoint) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -80,9 +67,7 @@ class ApiService {
         }
     }
 
-    /**
-     * Handle API response
-     */
+
     async handleResponse(response) {
         const data = await response.json();
         
@@ -101,9 +86,7 @@ class ApiService {
         }
     }
 
-    /**
-     * Handle errors
-     */
+
     handleError(error) {
         console.error('API Error:', error);
         return {
@@ -113,21 +96,17 @@ class ApiService {
         };
     }
 
-    /**
-     * Set authorization token (if needed in future)
-     */
+
     setAuthToken(token) {
         this.headers['Authorization'] = `Bearer ${token}`;
     }
 
-    /**
-     * Remove authorization token
-     */
+
     removeAuthToken() {
         delete this.headers['Authorization'];
     }
 }
 
-// Export singleton instance
+
 const apiService = new ApiService();
 export default apiService;

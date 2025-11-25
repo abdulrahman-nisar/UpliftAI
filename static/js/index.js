@@ -9,7 +9,7 @@ import {
 
 const auth = getAuth();
 
-// Toggle Password Visibility
+
 const forms = document.querySelector(".forms"),
   pwShowHide = document.querySelectorAll(".eye-icon"),
   links = document.querySelectorAll(".link"),
@@ -37,12 +37,12 @@ links.forEach(link => {
   });
 });
 
-//  Show/Hide Loader
+
 function showLoader(show) {
   loader.classList.toggle("hidden", !show);
 }
 
-// Toast Notification Function
+
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -59,15 +59,15 @@ function showToast(message, type = 'info') {
 
   container.appendChild(toast);
 
-  // Trigger reflow
+  
   toast.offsetHeight;
 
-  // Show toast
+  
   requestAnimationFrame(() => {
     toast.classList.add('show');
   });
 
-  // Remove toast after 3 seconds
+  
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => {
@@ -76,7 +76,7 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-//  Signup Function
+
 async function signupUser() {
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
@@ -101,7 +101,7 @@ async function signupUser() {
   }
 }
 
-//  Login Function
+
 async function loginUser() {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
@@ -120,7 +120,7 @@ async function loginUser() {
   }
 }
 
-//  Google Login Function
+
 async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
   showLoader(true);
@@ -136,7 +136,7 @@ async function loginWithGoogle() {
   }
 }
 
-// Check User Authentication Status
+
 function checkUserStatus() {
   onAuthStateChanged(auth, (user) => {
     if (user) {

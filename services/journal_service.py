@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Dict
 from models.journal_entry import JournalEntry
 from services.firebase_service import firebase_service
 from datetime import datetime

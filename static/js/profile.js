@@ -3,21 +3,20 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import userViewModel from '../viewmodels/UserViewModel.js';
 
 
-// DOM Elements
 const sidebar = document.querySelector(".sidebar");
 const closeBtn = document.querySelector("#btn-close");
 const openBtn = document.querySelector("#btn-open");
 const entryModal = document.getElementById("entry-modal");
 const loadingSpinner = document.getElementById('loading');
 
-// Profile Elements
+
 const profileName = document.getElementById('profile-name');
 const profileEmail = document.getElementById('profile-email');
 const inputName = document.getElementById('input-name');
 const inputEmail = document.getElementById('input-email');
 const goalsList = document.getElementById('goals-list');
 
-// Sidebar Logic
+
 closeBtn.addEventListener("click", () => {
     sidebar.classList.toggle("open");
     sidebar.classList.toggle("collapsed");
@@ -38,7 +37,7 @@ function menuBtnChange() {
     }
 }
 
-// Modal Logic
+
 window.openNewEntryModal = () => {
     entryModal.style.display = "block";
 }
@@ -53,14 +52,12 @@ window.onclick = (event) => {
     }
 }
 
-// Auth & Data Loading
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             showLoading(true);
-            // const token = await user.getIdToken(); // Not used for ID
-            
-            // Load User Profile
+
             const userData = await userViewModel.getUserProfile(user.uid);
             if (userData.success) {
                 renderProfile(userData.user);
@@ -88,12 +85,12 @@ function renderProfile(data) {
     inputName.value = name;
     inputEmail.value = data.email || '';
 
-    // Set Initials
+    
     const initials = getInitials(name);
     document.getElementById('main-profile-avatar').textContent = initials;
     document.getElementById('header-profile-avatar').textContent = initials;
 
-    // Render Goals
+    
     goalsList.innerHTML = '';
     if (data.goals && data.goals.length > 0) {
         data.goals.forEach(goal => {
@@ -114,7 +111,7 @@ function getInitials(name) {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Logout
+
 window.logout = () => {
     signOut(auth).then(() => {
         window.location.href = "/";
@@ -124,7 +121,7 @@ window.logout = () => {
     });
 };
 
-// Helper Functions
+
 function showLoading(show) {
     if (show) loadingSpinner.classList.remove('hidden');
     else loadingSpinner.classList.add('hidden');

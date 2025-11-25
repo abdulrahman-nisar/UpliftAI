@@ -1,8 +1,3 @@
-/**
- * User ViewModel
- * Manages user profile data and operations
- */
-
 import apiService from './ApiService.js';
 
 class UserViewModel {
@@ -12,9 +7,6 @@ class UserViewModel {
         this.error = null;
     }
 
-    /**
-     * Create user profile after Firebase Auth signup
-     */
     async createUserProfile(userId, email, username, age, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -53,9 +45,6 @@ class UserViewModel {
         }
     }
 
-    /**
-     * Get user profile
-     */
     async getUserProfile(userId) {
         this.isLoading = true;
         this.error = null;
@@ -87,9 +76,6 @@ class UserViewModel {
         }
     }
 
-    /**
-     * Update user profile
-     */
     async updateUserProfile(userId, updateData) {
         this.isLoading = true;
         this.error = null;
@@ -98,7 +84,7 @@ class UserViewModel {
             const response = await apiService.put(`/users/${userId}`, updateData);
 
             if (response.success) {
-                // Refresh user data
+                
                 await this.getUserProfile(userId);
                 return {
                     success: true,
@@ -122,9 +108,7 @@ class UserViewModel {
         }
     }
 
-    /**
-     * Get user goals
-     */
+
     async getUserGoals(userId) {
         this.isLoading = true;
         this.error = null;
@@ -155,9 +139,7 @@ class UserViewModel {
         }
     }
 
-    /**
-     * Update user goals
-     */
+
     async updateUserGoals(userId, goals) {
         this.isLoading = true;
         this.error = null;
@@ -190,22 +172,17 @@ class UserViewModel {
         }
     }
 
-    /**
-     * Clear current user data
-     */
     clearUser() {
         this.currentUser = null;
         this.error = null;
     }
 
-    /**
-     * Get current user
-     */
+
     getCurrentUser() {
         return this.currentUser;
     }
 }
 
-// Export singleton instance
+
 const userViewModel = new UserViewModel();
 export default userViewModel;

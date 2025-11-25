@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, db
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 import os
 
 

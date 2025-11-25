@@ -1,8 +1,3 @@
-/**
- * Content ViewModel
- * Manages RAG content retrieval and generation
- */
-
 import apiService from './ApiService.js';
 import geminiService from '../js/GeminiService.js'
 
@@ -17,9 +12,7 @@ class ContentViewModel {
         this.error = null;
     }
 
-    /**
-     * Create content (Admin only)
-     */
+ 
     async createContent(text, type, category, tags = []) {
         this.isLoading = true;
         this.error = null;
@@ -56,9 +49,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Get all content
-     */
+ 
     async getAllContent() {
         this.isLoading = true;
         this.error = null;
@@ -91,9 +82,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Get content by category
-     */
+
     async getContentByCategory(category) {
         this.isLoading = true;
         this.error = null;
@@ -125,9 +114,6 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Get content by type
-     */
     async getContentByType(type) {
         this.isLoading = true;
         this.error = null;
@@ -159,9 +145,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * RAG: Retrieve relevant content based on mood and goals
-     */
+
     async retrieveRelevantContent(mood = null, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -198,9 +182,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Generate personalized journal prompt (Simple, no AI)
-     */
+
     async generateJournalPrompt(mood = null, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -208,7 +190,7 @@ class ContentViewModel {
         try {
             const params = {};
             if (mood) params.mood = mood;
-            if (goals.length > 0) params.goals = goals.join(','); // ✅ FIX: Join array
+            if (goals.length > 0) params.goals = goals.join(','); 
 
             const response = await apiService.get('/content/prompt', params);
 
@@ -237,9 +219,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Get motivational quote
-     */
+
     async getMotivationalQuote(category = null) {
         this.isLoading = true;
         this.error = null;
@@ -272,9 +252,7 @@ class ContentViewModel {
         }
     }
 
-    /**
-     * Get wellness tips
-     */
+
     async getWellnessTips(mood = null) {
         this.isLoading = true;
         this.error = null;
@@ -307,13 +285,7 @@ class ContentViewModel {
         }
     }
 
-    // ═══════════════════════════════════════════
-    // RAG + AI METHODS (Using Gemini)
-    // ═══════════════════════════════════════════
 
-    /**
-     * Generate journal prompt using RAG + Gemini AI
-     */
     async generateRagPromptWithAI(userId, mood, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -383,9 +355,7 @@ class ContentViewModel {
         }
     }
     
-    /**
-     * Generate motivational message with AI
-     */
+
     async generateMotivationWithAI(mood) {
         this.isLoading = true;
         this.error = null;
@@ -393,7 +363,6 @@ class ContentViewModel {
         try {
             console.log(`💬 Generating motivation for mood: ${mood}`);
             
-            // Retrieve quotes
             const quotesResponse = await apiService.get('/content/type/Quote');
             
             const retrievedQuotes = [];
@@ -405,7 +374,6 @@ class ContentViewModel {
             
             console.log(`📚 Retrieved ${retrievedQuotes.length} quotes`);
             
-            // Generate with Gemini
             const result = await geminiService.generateMotivationalMessage(
                 mood,
                 retrievedQuotes
@@ -424,10 +392,7 @@ class ContentViewModel {
             this.isLoading = false;
         }
     }
-    
-    /**
-     * Generate daily affirmation with AI
-     */
+
     async generateAffirmationWithAI(mood, goals = []) {
         this.isLoading = true;
         this.error = null;
@@ -455,9 +420,7 @@ class ContentViewModel {
         }
     }
     
-    /**
-     * Get AI feedback on journal entry
-     */
+
     async getJournalFeedbackWithAI(journalContent, mood) {
         this.isLoading = true;
         this.error = null;
@@ -488,55 +451,36 @@ class ContentViewModel {
         }
     }
 
-    // ═══════════════════════════════════════════
-    // UTILITY METHODS
-    // ═══════════════════════════════════════════
 
-    /**
-     * Get current quote
-     */
     getCurrentQuote() {
         return this.currentQuote;
     }
 
-    /**
-     * Get current prompt
-     */
+
     getCurrentPrompt() {
         return this.currentPrompt;
     }
 
-    /**
-     * Get tips
-     */
+
     getTips() {
         return this.tips;
     }
 
-    /**
-     * Get relevant content
-     */
+
     getRelevantContent() {
         return this.relevantContent;
     }
 
-    /**
-     * Get loading state
-     */
+
     isLoadingState() {
         return this.isLoading;
     }
 
-    /**
-     * Get error
-     */
+
     getError() {
         return this.error;
     }
 
-    /**
-     * Clear content
-     */
     clearContent() {
         this.content = [];
         this.currentQuote = null;
@@ -546,14 +490,12 @@ class ContentViewModel {
         this.error = null;
     }
 
-    /**
-     * Clear error
-     */
+
     clearError() {
         this.error = null;
     }
 }
 
-// Export singleton instance
+
 const contentViewModel = new ContentViewModel();
 export default contentViewModel;

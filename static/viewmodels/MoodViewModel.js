@@ -1,8 +1,3 @@
-/**
- * Mood ViewModel
- * Manages mood tracking data and operations
- */
-
 import apiService from './ApiService.js';
 
 class MoodViewModel {
@@ -14,9 +9,7 @@ class MoodViewModel {
         this.error = null;
     }
 
-    /**
-     * Create mood entry
-     */
+
     async createMoodEntry(userId, mood, energy, notes = '', date = null) {
         this.isLoading = true;
         this.error = null;
@@ -60,9 +53,7 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Get all user moods
-     */
+
     async getUserMoods(userId, limit = null) {
         this.isLoading = true;
         this.error = null;
@@ -96,9 +87,6 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Get specific mood entry
-     */
     async getMoodEntry(userId, entryId) {
         this.isLoading = true;
         this.error = null;
@@ -130,9 +118,7 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Update mood entry
-     */
+
     async updateMoodEntry(userId, entryId, updateData) {
         this.isLoading = true;
         this.error = null;
@@ -163,9 +149,6 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Delete mood entry
-     */
     async deleteMoodEntry(userId, entryId) {
         this.isLoading = true;
         this.error = null;
@@ -174,7 +157,7 @@ class MoodViewModel {
             const response = await apiService.delete(`/moods/${userId}/${entryId}`);
 
             if (response.success) {
-                // Remove from local array
+                
                 this.moods = this.moods.filter(m => m.entry_id !== entryId);
                 return {
                     success: true,
@@ -198,9 +181,7 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Get mood statistics
-     */
+
     async getMoodStatistics(userId, days = 7) {
         this.isLoading = true;
         this.error = null;
@@ -232,9 +213,7 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Get moods by date range
-     */
+
     async getMoodsByDateRange(userId, startDate, endDate) {
         this.isLoading = true;
         this.error = null;
@@ -269,16 +248,12 @@ class MoodViewModel {
         }
     }
 
-    /**
-     * Get all moods
-     */
+
     getAllMoods() {
         return this.moods;
     }
 
-    /**
-     * Clear moods
-     */
+
     clearMoods() {
         this.moods = [];
         this.currentMood = null;
@@ -287,6 +262,6 @@ class MoodViewModel {
     }
 }
 
-// Export singleton instance
+
 const moodViewModel = new MoodViewModel();
 export default moodViewModel;

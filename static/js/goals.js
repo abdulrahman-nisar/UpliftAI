@@ -4,29 +4,25 @@ import userViewModel from '../viewmodels/UserViewModel.js';
 const auth = getAuth();
 let currentUser = null;
 
-// Check authentication
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
         console.log("User authenticated:", user.email);
     } else {
-        // Redirect to login if not authenticated
         window.location.href = "/";
     }
 });
 
-// Toggle Goal Selection
+
 window.toggleGoal = function(element) {
     element.classList.toggle('selected');
 }
 
-// Show/Hide Loader
 const loader = document.getElementById("loading");
 function showLoader(show) {
     loader.classList.toggle("hidden", !show);
 }
 
-// Toast Notification
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -42,7 +38,7 @@ function showToast(message, type = 'info') {
     `;
 
     container.appendChild(toast);
-    toast.offsetHeight; // Trigger reflow
+    toast.offsetHeight; 
     
     requestAnimationFrame(() => {
         toast.classList.add('show');
@@ -56,7 +52,7 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-// Save Profile
+
 window.saveProfile = async function() {
     if (!currentUser) {
         showToast("User not authenticated", "error");
@@ -66,7 +62,7 @@ window.saveProfile = async function() {
     const username = document.getElementById('username').value;
     const age = document.getElementById('age').value;
     
-    // Get selected goals
+
     const selectedGoals = [];
     document.querySelectorAll('.goal-item.selected').forEach(item => {
         selectedGoals.push(item.getAttribute('data-value'));
@@ -90,9 +86,8 @@ window.saveProfile = async function() {
 
         if (result.success) {
             showToast("Profile created successfully!", "success");
-            // Redirect to dashboard after short delay
             setTimeout(() => {
-                window.location.href = "/today"; // Assuming dashboard route exists or will be created
+                window.location.href = "/today"; 
             }, 1500);
         } else {
             showToast(result.error || "Failed to create profile", "error");
