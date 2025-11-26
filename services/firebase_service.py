@@ -19,39 +19,18 @@ class FirebaseService:
     
     def initialize_firebase(self):
         try:
-            # Check for environment variable first (for Vercel deployment)
-            firebase_creds = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
+            cred_path = os.path.join(os.path.dirname(__file__), '..', 'serviceAccountKey.json')
             
-            if firebase_creds:
-                import json
-                # If it's a string (JSON), parse it
-                if isinstance(firebase_creds, str):
-                    try:
-                        cred_dict = json.loads(firebase_creds)
-                        cred = credentials.Certificate(cred_dict)
-                    except json.JSONDecodeError:
-                        print("❌ Error decoding FIREBASE_SERVICE_ACCOUNT JSON")
-                        raise
-            else:
-                # Fallback to file (for local development)
-                cred_path = os.path.join(os.path.dirname(__file__), '..', 'serviceAccountKey.json')
-                
-                if not os.path.exists(cred_path):
-                    # If neither exists, we can't initialize
-                    print(f"❌ Service account key not found at {cred_path} and FIREBASE_SERVICE_ACCOUNT not set")
-                    # We might want to skip raising here if we want the app to start even if DB fails, 
-                    # but for now let's keep the behavior consistent.
-                    raise FileNotFoundError(f"Service account key not found at {cred_path}")
-                
-                cred = credentials.Certificate(cred_path)
+            if not os.path.exists(cred_path):
+                raise FileNotFoundError(f"Service account key not found at {cred_path}")
             
-            # Check if already initialized to avoid "App already exists" error
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app(cred, {
-                    'databaseURL': 'https://upliftai-44452-default-rtdb.firebaseio.com/'
-                })
-                print("✅ Firebase Admin SDK initialized successfully")
+            cred = credentials.Certificate(cred_path)
             
+            firebase_admin.initialize_app(cred, {
+                'databaseURL': 'https://upliftai-44452-default-rtdb.firebaseio.com/'
+            })
+            
+            print("✅ Firebase Admin SDK initialized successfully")
         except Exception as e:
             print(f"❌ Firebase initialization error: {str(e)}")
             raise
