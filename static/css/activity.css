@@ -1,5 +1,3 @@
-/* Inherit Global & Sidebar Styles from a common base if possible */
-
 :root {
     --primary-color: #6C63FF;
     --secondary-color: #2A2D3E;

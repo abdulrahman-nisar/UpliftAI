@@ -9,7 +9,6 @@ import {
 
 const auth = getAuth();
 
-
 const forms = document.querySelector(".forms"),
   pwShowHide = document.querySelectorAll(".eye-icon"),
   links = document.querySelectorAll(".link"),
@@ -62,7 +61,7 @@ function showToast(message, type = 'info') {
   
   toast.offsetHeight;
 
-  
+
   requestAnimationFrame(() => {
     toast.classList.add('show');
   });

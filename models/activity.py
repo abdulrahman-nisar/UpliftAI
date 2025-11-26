@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-
 class Activity:
 
     def __init__(

@@ -6,7 +6,6 @@ class ApiService {
         };
     }
 
-
     async get(endpoint, params = {}) {
         try {
             const queryString = new URLSearchParams(params).toString();
@@ -22,8 +21,6 @@ class ApiService {
             return this.handleError(error);
         }
     }
-
-
     async post(endpoint, data = {}) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -37,9 +34,7 @@ class ApiService {
             return this.handleError(error);
         }
     }
-
-
-    async put(endpoint, data = {}) {
+        async put(endpoint, data = {}) {
         try {
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'PUT',
@@ -66,8 +61,7 @@ class ApiService {
             return this.handleError(error);
         }
     }
-
-
+    
     async handleResponse(response) {
         const data = await response.json();
         
@@ -86,7 +80,6 @@ class ApiService {
         }
     }
 
-
     handleError(error) {
         console.error('API Error:', error);
         return {
@@ -95,18 +88,7 @@ class ApiService {
             status: 0
         };
     }
-
-
-    setAuthToken(token) {
-        this.headers['Authorization'] = `Bearer ${token}`;
-    }
-
-
-    removeAuthToken() {
-        delete this.headers['Authorization'];
-    }
 }
-
 
 const apiService = new ApiService();
 export default apiService;

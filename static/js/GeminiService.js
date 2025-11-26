@@ -3,7 +3,7 @@ import { GEMINI_API_KEY } from './config.js';
 class GeminiService {
     constructor() {
         this.apiKey = GEMINI_API_KEY;
-        // Using Gemini 2.0 Flash as requested from the available models list
+        
         this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
         this.systemContext = `
 You are a compassionate mental wellness companion for young adults (ages 12-30).
@@ -17,7 +17,6 @@ Your role:
 `;    
         console.log("✅ Gemini AI Service initialized");
         
-        // Validate API key
         if (!this.apiKey || this.apiKey === 'YOUR_GEMINI_API_KEY_HERE') {
             console.error('❌ Gemini API key not configured! Please add it to config.js');
         }
@@ -115,7 +114,6 @@ Requirements:
 
             const text = await this._callGeminiAPI(promptText);
             
-            // Clean up potential markdown code blocks if Gemini adds them
             const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
             const data = JSON.parse(cleanText);
             
@@ -132,7 +130,7 @@ Requirements:
             
         } catch (error) {
             console.error('❌ Gemini generation error:', error);
-            // Fallback to individual fallback methods if JSON parsing fails
+            
             const fallbackPrompt = this._fallbackPrompt(userMood);
             return {
                 success: true,

@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-
 class MoodEntry:
 
     def __init__(

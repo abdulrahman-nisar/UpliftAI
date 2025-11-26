@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-
 class JournalEntry:
     def __init__(
         self,

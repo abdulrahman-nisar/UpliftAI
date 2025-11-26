@@ -8,7 +8,6 @@ class JournalViewModel {
         this.error = null;
     }
 
-
     async createJournalEntry(userId, content, prompt = '', date = null) {
         this.isLoading = true;
         this.error = null;
@@ -51,7 +50,6 @@ class JournalViewModel {
         }
     }
 
-
     async getUserJournals(userId, limit = null) {
         this.isLoading = true;
         this.error = null;
@@ -85,70 +83,6 @@ class JournalViewModel {
         }
     }
 
-
-    async getJournalEntry(userId, journalId) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.get(`/journals/${userId}/${journalId}`);
-
-            if (response.success) {
-                this.currentJournal = response.data.journal_entry;
-                return {
-                    success: true,
-                    journal: this.currentJournal
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-
-    async updateJournalEntry(userId, journalId, updateData) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.put(`/journals/${userId}/${journalId}`, updateData);
-
-            if (response.success) {
-                return {
-                    success: true,
-                    message: 'Journal updated successfully'
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
- 
     async deleteJournalEntry(userId, journalId) {
         this.isLoading = true;
         this.error = null;
@@ -179,89 +113,7 @@ class JournalViewModel {
             this.isLoading = false;
         }
     }
-
-
-    async searchJournals(userId, keyword) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.get(`/journals/${userId}/search`, {
-                keyword: keyword
-            });
-
-            if (response.success) {
-                return {
-                    success: true,
-                    journals: response.data.journals,
-                    count: response.data.count
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-
-    async getJournalsByDateRange(userId, startDate, endDate) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.get(`/journals/${userId}/range`, {
-                start_date: startDate,
-                end_date: endDate
-            });
-
-            if (response.success) {
-                return {
-                    success: true,
-                    journals: response.data.journals,
-                    count: response.data.count
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-
-    getAllJournals() {
-        return this.journals;
-    }
-
-
-    clearJournals() {
-        this.journals = [];
-        this.currentJournal = null;
-        this.error = null;
-    }
 }
-
 
 const journalViewModel = new JournalViewModel();
 export default journalViewModel;

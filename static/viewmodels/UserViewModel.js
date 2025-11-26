@@ -44,7 +44,7 @@ class UserViewModel {
             this.isLoading = false;
         }
     }
-
+    
     async getUserProfile(userId) {
         this.isLoading = true;
         this.error = null;
@@ -75,114 +75,7 @@ class UserViewModel {
             this.isLoading = false;
         }
     }
-
-    async updateUserProfile(userId, updateData) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.put(`/users/${userId}`, updateData);
-
-            if (response.success) {
-                
-                await this.getUserProfile(userId);
-                return {
-                    success: true,
-                    message: 'Profile updated successfully'
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-
-    async getUserGoals(userId) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.get(`/users/${userId}/goals`);
-
-            if (response.success) {
-                return {
-                    success: true,
-                    goals: response.data.goals
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-
-    async updateUserGoals(userId, goals) {
-        this.isLoading = true;
-        this.error = null;
-
-        try {
-            const response = await apiService.put(`/users/${userId}/goals`, {
-                goals: goals
-            });
-
-            if (response.success) {
-                return {
-                    success: true,
-                    message: 'Goals updated successfully'
-                };
-            } else {
-                this.error = response.error;
-                return {
-                    success: false,
-                    error: response.error
-                };
-            }
-        } catch (error) {
-            this.error = error.message;
-            return {
-                success: false,
-                error: error.message
-            };
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-    clearUser() {
-        this.currentUser = null;
-        this.error = null;
-    }
-
-
-    getCurrentUser() {
-        return this.currentUser;
-    }
 }
-
 
 const userViewModel = new UserViewModel();
 export default userViewModel;
