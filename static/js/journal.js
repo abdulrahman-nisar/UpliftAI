@@ -79,7 +79,7 @@ window.saveMoodEntry = async () => {
 
     try {
         showLoading(true);
-        const response = await moodViewModel.logMood(user.uid, mood, energy);
+        const response = await moodViewModel.createMoodEntry(user.uid, mood, energy);
         
         if (response.success) {
             showToast("Mood logged successfully!", "success");
