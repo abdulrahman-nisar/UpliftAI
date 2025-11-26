@@ -3,7 +3,8 @@ import { GEMINI_API_KEY } from './config.js';
 class GeminiService {
     constructor() {
         this.apiKey = GEMINI_API_KEY;
-        this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent";
+        // Using Gemini 2.0 Flash as requested from the available models list
+        this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
         this.systemContext = `
 You are a compassionate mental wellness companion for young adults (ages 12-30).
 Your role:
@@ -75,6 +76,75 @@ Your role:
         }
     }
     
+    async generateFullWellnessContent(userMood, retrievedTips, retrievedQuotes, recentJournals = []) {
+        try {
+            console.log(`🤖 Generating full wellness content for mood: ${userMood}`);
+
+            const tipsText = this._formatList(retrievedTips);
+            const quotesText = this._formatList(retrievedQuotes);
+            const journalsText = recentJournals.length > 0 ? recentJournals.join(', ') : 'None';
+            
+            const context = `
+USER MOOD: ${userMood}
+
+RETRIEVED WELLNESS TIPS:
+${tipsText}
+
+RETRIEVED QUOTES:
+${quotesText}
+
+RECENT JOURNAL THEMES: ${journalsText}
+`;
+            
+            const promptText = `
+${this.systemContext}
+
+CONTEXT:
+${context}
+
+TASK:
+Generate a JSON object containing three items for this user:
+1. "prompt": A warm, personalized journal prompt (under 100 words).
+2. "affirmation": A short, powerful daily affirmation (first person "I...", under 20 words).
+3. "quote": A short motivational quote (under 30 words).
+
+Requirements:
+- Acknowledge their ${userMood} mood with empathy in the prompt.
+- Return ONLY raw JSON. Do not use markdown formatting.
+`;
+
+            const text = await this._callGeminiAPI(promptText);
+            
+            // Clean up potential markdown code blocks if Gemini adds them
+            const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            const data = JSON.parse(cleanText);
+            
+            console.log('✅ Full wellness content generated successfully');
+            
+            return {
+                success: true,
+                prompt: data.prompt,
+                affirmation: data.affirmation,
+                quote: data.quote,
+                mood: userMood,
+                source: 'gemini-api'
+            };
+            
+        } catch (error) {
+            console.error('❌ Gemini generation error:', error);
+            // Fallback to individual fallback methods if JSON parsing fails
+            const fallbackPrompt = this._fallbackPrompt(userMood);
+            return {
+                success: true,
+                prompt: fallbackPrompt.prompt,
+                affirmation: "I am capable of handling whatever comes my way.",
+                quote: "Believe you can and you're halfway there.",
+                mood: userMood,
+                source: 'fallback'
+            };
+        }
+    }
+
     async generateJournalPrompt(userMood, retrievedTips, retrievedQuotes, recentJournals = []) {
         try {
             console.log(`🤖 Generating journal prompt for mood: ${userMood}`);

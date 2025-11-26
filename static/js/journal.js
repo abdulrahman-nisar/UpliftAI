@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/f
 import journalViewModel from '../viewmodels/JournalViewModel.js';
 import moodViewModel from '../viewmodels/MoodViewModel.js';
 import userViewModel from '../viewmodels/UserViewModel.js';
+import contentViewModel from '../viewmodels/ContentViewModel.js';
 import geminiService from './GeminiService.js';
 
 
@@ -333,7 +334,7 @@ async function loadSuggestion(userId) {
     
     if (!suggestionContent) return;
 
-    
+    // Show loading state
     suggestionContent.innerHTML = `
         <div class="loading-suggestion">
             <div class="typing-indicator">
@@ -342,10 +343,8 @@ async function loadSuggestion(userId) {
             <p>Gemini is crafting a thought for you...</p>
         </div>
     `;
-    suggestionActions.style.display = 'none';
-
+    
     try {
-
         const recentJournals = allEntries.slice(0, 3).map(e => e.content);
         
         let userMood = "neutral";
@@ -354,41 +353,40 @@ async function loadSuggestion(userId) {
             userMood = moodResponse.moods[0].mood;
         }
 
-        const promptResponse = await geminiService.generateJournalPrompt(userMood, [], [], recentJournals);
-        currentPrompt = promptResponse.prompt;
+        // Get User Goals
+        let userGoals = [];
+        const userProfile = await userViewModel.getUserProfile(userId);
+        if (userProfile.success && userProfile.user) {
+            userGoals = userProfile.user.goals || [];
+        }
 
+        // Fetch Relevant Content (RAG)
+        const contentResponse = await contentViewModel.retrieveRelevantContent(userMood, userGoals);
+        let tips = [];
+        let quotes = [];
+        
+        if (contentResponse.success && contentResponse.content) {
+            tips = contentResponse.content.filter(c => c.type === 'Tip').map(c => c.text);
+            quotes = contentResponse.content.filter(c => c.type === 'Quote').map(c => c.text);
+        }
+
+        // Use the new combined API call to save requests
+        const aiResponse = await geminiService.generateFullWellnessContent(userMood, tips, quotes, recentJournals);
+        currentPrompt = aiResponse.prompt;
+
+        // Update UI with all content at once
         suggestionContent.innerHTML = `<p>"${currentPrompt}"</p>`;
         suggestionActions.style.display = 'flex';
 
-        loadAffirmation(userMood);
-        loadQuote(userMood);
+        const affirmationEl = document.getElementById('affirmation-content');
+        if (affirmationEl) affirmationEl.innerHTML = `<p>"${aiResponse.affirmation}"</p>`;
+
+        const quoteEl = document.getElementById('quote-content');
+        if (quoteEl) quoteEl.innerHTML = `<p>${aiResponse.quote}</p>`;
 
     } catch (error) {
         console.error("Error generating suggestion:", error);
         suggestionContent.innerHTML = `<p>Could not generate a suggestion right now. How are you feeling?</p>`;
-    }
-}
-
-async function loadAffirmation(mood) {
-    const el = document.getElementById('affirmation-content');
-    if (!el) return;
-    try {
-        const text = await geminiService.generateDailyAffirmation(mood);
-        el.innerHTML = `<p>"${text}"</p>`;
-    } catch (e) {
-        console.error("Error loading affirmation:", e);
-        el.innerHTML = `<p>I am enough.</p>`;
-    }
-}
-
-async function loadQuote(mood) {
-    const el = document.getElementById('quote-content');
-    if (!el) return;
-    try {
-        const text = await geminiService.generateQuote(mood);
-        el.innerHTML = `<p>${text}</p>`;
-    } catch (e) {
-        el.innerHTML = `<p>Keep going.</p>`;
     }
 }
 
