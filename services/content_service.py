@@ -83,7 +83,6 @@ class ContentService:
 
     @staticmethod
     def get_wellness_tips(user_mood: str = None) -> Dict:
-        """Get wellness tips based on user mood"""
         try:
             result = ContentService.get_content_by_type('Tip')
             
